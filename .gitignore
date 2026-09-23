@@ -1,0 +1,9 @@
+.venv
+.DS_Store
+Support Materials/
+portal/node_modules/
+portal/dist/
+portal/public/readings/module-*.json
+*.local
+.env
+.env.*
