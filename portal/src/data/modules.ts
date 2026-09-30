@@ -410,6 +410,7 @@ export const modules: CourseModule[] = [
           task: "Task 5 — APOD and value",
           items: [
             "1. APOD lines (nearest dollar): Line 2 Vacancy & credit losses $7,434; Line 3 Effective rental income $98,766; Line 5 GOI $98,766; Line 10 Off-site management $6,914; Line 29 Total operating expenses $25,302; Line 30 NOI $73,464; Line 35 CFBT $25,464 (after $48,000 ADS).",
+            "Line 29 is the sum of owner-paid opex on 10,000 sf: Line 7 Real estate taxes $10,000 ($1.00 psf); Line 9 Property insurance $3,000 ($0.30); Line 10 Off-site management $6,914 (7% of GOI); Line 14 Repairs and maintenance $2,000 ($0.20 exterior/CAM); Line 15 Common-area electric $600 ($0.06); Line 16 Water and sewer $600 ($0.06); Lines 19–21 Accounting/legal/permits/advertising $988 (combined; owner-paid, not in the stop); Line 24 Landscaping $1,200 ($0.12). Lines 8 and 11–13 are $0 (payroll sits inside the management fee). Check: $17,400 stop ($1.74 × 10,000) + $6,914 + $988 = $25,302.",
             "2. Ask price = $73,464 ÷ 0.07 = $1,049,485, rounded to $1,050,000.",
           ],
         },
@@ -517,6 +518,7 @@ export const modules: CourseModule[] = [
     ],
     tools: [
       { label: "Case lab", href: "/tools/case" },
+      { label: "NOI forecast", href: "/tools/noi" },
       { label: "Vacancy & absorption", href: "/tools/market" },
       { label: "Effective rent", href: "/tools/effective-rent" },
       { label: "APOD", href: "/tools/apod" },

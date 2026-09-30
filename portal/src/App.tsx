@@ -18,6 +18,9 @@ import { CaseLab } from "./pages/CaseLab"
 import { EffectiveRent } from "./pages/EffectiveRent"
 import { Irv } from "./pages/Irv"
 import { Market } from "./pages/Market"
+import { Calculator } from "./pages/Calculator"
+import { Quiz } from "./pages/Quiz"
+import { NoiForecast } from "./pages/NoiForecast"
 import { Tvm } from "./pages/Tvm"
 
 export default function App() {
@@ -31,6 +34,8 @@ export default function App() {
         <Route path="listen/:id" element={<ListenPlayer />} />
         <Route path="library" element={<Library />} />
         <Route path="glossary" element={<Glossary />} />
+        <Route path="practice" element={<Quiz />} />
+        <Route path="tools/calculator" element={<Calculator />} />
         <Route path="tools/tvm" element={<Tvm />} />
         <Route path="tools/npv" element={<NpvIrr />} />
         <Route path="tools/amort" element={<Amort />} />
@@ -38,6 +43,7 @@ export default function App() {
         <Route path="tools/effective-rent" element={<EffectiveRent />} />
         <Route path="tools/irv" element={<Irv />} />
         <Route path="tools/case" element={<CaseLab />} />
+        <Route path="tools/noi" element={<NoiForecast />} />
         <Route path="tools/apod" element={<Apod />} />
         <Route path="tools/cfaw" element={<Cfaw />} />
         <Route path="tools/acsw" element={<Acsw />} />

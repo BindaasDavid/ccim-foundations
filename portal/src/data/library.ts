@@ -81,8 +81,8 @@ export const sources: SourceFile[] = [
   {
     file: "CCIM_Financial_Calculator_V_14.3_2026.04.13.xlsx",
     kind: "Model",
-    portal: "/tools/tvm",
-    use: "TVM, NPV/IRR, differential cash flows, amortization, and statistics.",
+    portal: "/tools/calculator",
+    use: "Workbook recreation: TVM, chain, NPV/IRR, differential CF, amortization, stats, math.",
   },
   {
     file: "CCIM_DCF_Analysis_V.12.2_2025.12.10.xlsx",

@@ -2,7 +2,9 @@ import { useMemo, useState } from "react"
 import { irr, pmt, remainingBalance } from "../lib/finance"
 import { money, num, pct } from "../lib/format"
 import { modules } from "../data/modules"
-import { AnswerKey, Card, Field, Page, Stat, TextField } from "../components/ui"
+import { AnswerKey, Card, Field, Page, Sheet, SheetRow, Stat } from "../components/ui"
+import { buildNoiForecast, parkPlazaDrivers, parkPlazaTenants, type NoiDrivers, type TenantRow } from "../lib/noiForecast"
+import { NoiForecastGrid } from "./NoiForecast"
 
 const YEARS = [1, 2, 3, 4, 5, 6] as const
 
@@ -59,16 +61,26 @@ export function CaseLab() {
   const [cFree, setCFree] = useState(0)
   const [cTi, setCTi] = useState(0)
 
-  const [a, setA] = useState<Tenant>({ name: "Suite A", y1: 45000, bump4: 5, bump6: 5 })
-  const [b, setB] = useState<Tenant>({ name: "Suite B", y1: 48000, bump4: 5, bump6: 0 })
-  const [c, setC] = useState<Tenant>({ name: "Suite C", y1: 50000, bump4: 5, bump6: 5 })
-  const [d, setD] = useState<Tenant>({ name: "Suite D", y1: 64000, bump4: 5, bump6: 0 })
+  const [a] = useState<Tenant>({ name: "Suite A", y1: 45000, bump4: 5, bump6: 5 })
+  const [b] = useState<Tenant>({ name: "Suite B", y1: 48000, bump4: 5, bump6: 0 })
+  const [c] = useState<Tenant>({ name: "Suite C", y1: 50000, bump4: 5, bump6: 5 })
+  const [d] = useState<Tenant>({ name: "Suite D", y1: 64000, bump4: 5, bump6: 0 })
   const [vacPct, setVacPct] = useState(7)
   const [mgmtPct, setMgmtPct] = useState(7)
   const [adminPct, setAdminPct] = useState(1)
-  const [otherOpex, setOtherOpex] = useState(25200)
+  const [tax, setTax] = useState(10000)
+  const [ins, setIns] = useState(3000)
+  const [rm, setRm] = useState(2000)
+  const [electric, setElectric] = useState(600)
+  const [water, setWater] = useState(600)
+  const [landscape, setLandscape] = useState(1200)
   const [cap, setCap] = useState(7)
   const [price, setPrice] = useState(0)
+  const [t6tenants, setT6tenants] = useState<TenantRow[]>(() =>
+    parkPlazaTenants.map((t) => ({ ...t, rents: [...t.rents] })),
+  )
+  const [t6drivers, setT6drivers] = useState<NoiDrivers>({ ...parkPlazaDrivers })
+  const noiYears = useMemo(() => buildNoiForecast(t6tenants, t6drivers), [t6tenants, t6drivers])
 
   const [loan, setLoan] = useState(1050000)
   const [ratePct, setRatePct] = useState(6.5)
@@ -129,11 +141,12 @@ export function CaseLab() {
       const goi = pri - vacancy
       const mgmt = goi * (mgmtPct / 100)
       const admin = goi * (adminPct / 100)
-      const opex = mgmt + admin + otherOpex
+      const stopOpex = tax + ins + rm + electric + water + landscape
+      const opex = mgmt + admin + stopOpex
       const noi = goi - opex
-      return { y, pri, vacancy, goi, mgmt, admin, opex, noi }
+      return { y, pri, vacancy, goi, mgmt, admin, stopOpex, opex, noi }
     })
-  }, [a, b, c, d, vacPct, mgmtPct, adminPct, otherOpex])
+  }, [a, b, c, d, vacPct, mgmtPct, adminPct, tax, ins, rm, electric, water, landscape])
 
   const y1 = forecast[0]
   const indicated = y1 && cap ? y1.noi / (cap / 100) : 0
@@ -145,15 +158,15 @@ export function CaseLab() {
     const ads = monthly * 12
     const bal = loan ? remainingBalance(loan, ratePct / 100, amortYrs, 12, hold * 12) : 0
     const equity = purchase - loan
-    const ops = forecast.slice(0, hold).map((row) => ({ ...row, cfbt: row.noi - ads }))
-    const y6 = forecast[5]?.noi ?? 0
+    const ops = noiYears.slice(0, hold).map((row, i) => ({ y: i + 1, noi: row.noi, cfbt: row.noi - ads }))
+    const y6 = noiYears[5]?.noi ?? 0
     const saleRaw = exitCap ? y6 / (exitCap / 100) : 0
     const sale = roundThousands(saleRaw)
     const costs = sale * (saleCostPct / 100)
     const sbt = sale - costs - bal
     const cfs = [-equity, ...ops.map((o, i) => (i === ops.length - 1 ? o.cfbt + sbt : o.cfbt))]
     return { monthly, ads, bal, equity, ops, y6, saleRaw, sale, costs, sbt, cfs, irr: irr(cfs) }
-  }, [loan, ratePct, amortYrs, hold, purchase, forecast, exitCap, saleCostPct])
+  }, [loan, ratePct, amortYrs, hold, purchase, noiYears, exitCap, saleCostPct])
 
   const pick = pA.year1 >= pC.year1 ? "Prospect A" : "Prospect B"
   const key = meta.tldr.answers ?? []
@@ -206,7 +219,7 @@ export function CaseLab() {
           {key[0] && <AnswerKey title={key[0].task} items={key[0].items} />}
         </Card>
 
-        <Card>
+        <Card id="task-2">
           <p className="text-xs tracking-wide text-gold-deep uppercase">Task 2 · Operating expense stop</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Field label="Tenant SF" value={tenantSf} onChange={setTenantSf} />
@@ -223,7 +236,7 @@ export function CaseLab() {
           {key[1] && <AnswerKey title={key[1].task} items={key[1].items} />}
         </Card>
 
-        <Card>
+        <Card id="task-3">
           <p className="text-xs tracking-wide text-gold-deep uppercase">Task 3 · Vacancy and absorption</p>
           <div className="mt-4 grid gap-4 lg:grid-cols-3">
             {[
@@ -291,7 +304,7 @@ export function CaseLab() {
           {key[2] && <AnswerKey title={key[2].task} items={key[2].items} />}
         </Card>
 
-        <Card>
+        <Card id="task-4">
           <p className="text-xs tracking-wide text-gold-deep uppercase">Task 4 · Concessions and effective rent</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <Field label="Suite SF" value={suiteSf} onChange={setSuiteSf} />
@@ -333,23 +346,37 @@ export function CaseLab() {
         <Card>
           <p className="text-xs tracking-wide text-gold-deep uppercase">Task 5 · APOD and value</p>
           <p className="mt-2 text-sm text-ink/70">
-            PRI is the year-1 rent roll below. Vacancy is a market allowance. Management and admin are
-            percents of GOI.
+            Line 29 is the gold total. The $1.74 stop covers taxes through landscaping on 10,000 sf.
+            Management is 7% of GOI. Accounting/legal/permits/advertising is the 1% admin line.
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Field label="Vacancy (%)" value={vacPct} onChange={setVacPct} />
             <Field label="Mgmt (% of GOI)" value={mgmtPct} onChange={setMgmtPct} />
-            <Field label="Admin (% of GOI)" value={adminPct} onChange={setAdminPct} />
-            <Field label="Other owner opex $" value={otherOpex} onChange={setOtherOpex} />
+            <Field label="Admin / legal combo (% of GOI)" value={adminPct} onChange={setAdminPct} />
             <Field label="Going-in cap (%)" value={cap} onChange={setCap} />
             <Field label="Override purchase $" value={price} onChange={setPrice} />
+          </div>
+          <div className="mt-4">
+            <Sheet title="Line 29 operating expenses">
+              <SheetRow n="7" label="Real estate taxes ($1.00 psf)" value={tax} onChange={setTax} format="money" />
+              <SheetRow n="8" label="Personal property taxes" value={0} kind="computed" format="money" />
+              <SheetRow n="9" label="Property insurance ($0.30 psf)" value={ins} onChange={setIns} format="money" />
+              <SheetRow n="10" label="Off-site management (7% of GOI)" value={y1?.mgmt ?? 0} kind="computed" format="money" />
+              <SheetRow n="11–13" label="Payroll / benefits / workers’ comp (inside mgmt fee)" value={0} kind="computed" format="money" />
+              <SheetRow n="14" label="Repairs and maintenance — exterior/CAM ($0.20 psf)" value={rm} onChange={setRm} format="money" />
+              <SheetRow n="15" label="Common-area electric ($0.06 psf)" value={electric} onChange={setElectric} format="money" />
+              <SheetRow n="16" label="Water and sewer ($0.06 psf)" value={water} onChange={setWater} format="money" />
+              <SheetRow n="19–21" label="Accounting, legal, permits, advertising (combined)" value={y1?.admin ?? 0} kind="computed" format="money" />
+              <SheetRow n="24" label="Landscaping ($0.12 psf)" value={landscape} onChange={setLandscape} format="money" />
+              <SheetRow n="29" label="Total operating expenses" value={y1?.opex ?? 0} kind="total" format="money" hint="7 through 24" />
+              <SheetRow n="30" label="NOI" value={y1?.noi ?? 0} kind="total" format="money" hint="GOI − 29" />
+            </Sheet>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Stat label="PRI" value={money(y1?.pri ?? 0, 0)} />
             <Stat label="Vacancy & credit" value={money(y1?.vacancy ?? 0, 0)} />
             <Stat label="GOI" value={money(y1?.goi ?? 0, 0)} />
-            <Stat label="Total opex" value={money(y1?.opex ?? 0, 0)} />
-            <Stat label="NOI" value={money(y1?.noi ?? 0, 0)} accent />
+            <Stat label="Stop opex ($1.74 × 10,000)" value={money(y1?.stopOpex ?? 0, 0)} />
             <Stat label="NOI ÷ cap" value={money(indicated, 0)} />
             <Stat label="Ask (nearest $1,000)" value={money(asking, 0)} />
             <Stat label="Purchase used" value={money(purchase, 0)} />
@@ -357,52 +384,13 @@ export function CaseLab() {
           {key[4] && <AnswerKey title={key[4].task} items={key[4].items} />}
         </Card>
 
-        <Card>
-          <p className="text-xs tracking-wide text-gold-deep uppercase">Task 6 · Six-year NOI</p>
-          <p className="mt-2 text-sm text-ink/70">
-            Enter year-1 contract rent. Bumps apply at the beginning of year 4 and year 6.
+        <Card id="task-6">
+          <p className="text-xs tracking-wide text-gold-deep uppercase">Task 6 · Forecasting NOI</p>
+          <p className="mt-2 mb-4 text-sm text-ink/70">
+            Same six-year stack as the packet worksheet. Yellow cells are tenant rents and the percent
+            drivers. Gold rows total PRI, GOI, opex, and NOI.
           </p>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {([
-              [a, setA],
-              [b, setB],
-              [c, setC],
-              [d, setD],
-            ] as const).map(([t, set]) => (
-              <div key={t.name} className="grid gap-3 rounded-lg border border-line bg-white p-4 sm:grid-cols-2">
-                <TextField label="Suite" value={t.name} onChange={(name) => set({ ...t, name })} />
-                <Field label="Year 1 rent $" value={t.y1} onChange={(y1) => set({ ...t, y1 })} />
-                <Field label="BOY 4 bump %" value={t.bump4} onChange={(bump4) => set({ ...t, bump4 })} />
-                <Field label="BOY 6 bump %" value={t.bump6} onChange={(bump6) => set({ ...t, bump6 })} />
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="text-xs uppercase text-ink/50">
-                  <th className="py-2">Year</th>
-                  <th>PRI</th>
-                  <th>Vacancy</th>
-                  <th>GOI</th>
-                  <th>Opex</th>
-                  <th>NOI</th>
-                </tr>
-              </thead>
-              <tbody>
-                {forecast.map((row) => (
-                  <tr key={row.y} className="border-t border-line">
-                    <td className="py-2">{row.y}</td>
-                    <td>{money(row.pri, 0)}</td>
-                    <td>{money(row.vacancy, 0)}</td>
-                    <td>{money(row.goi, 0)}</td>
-                    <td>{money(row.opex, 0)}</td>
-                    <td>{money(row.noi, 0)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <NoiForecastGrid tenants={t6tenants} setTenants={setT6tenants} drivers={t6drivers} setDrivers={setT6drivers} />
           {key[5] && <AnswerKey title={key[5].task} items={key[5].items} />}
         </Card>
 

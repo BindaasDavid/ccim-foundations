@@ -10,6 +10,12 @@
   --color-cream: #f4efe4;
   --color-paper: #fbf8f2;
   --color-line: #d9d0bf;
+  --color-xl-navy: #1f4e79;
+  --color-xl-navy-deep: #16365c;
+  --color-xl-input: #fff2cc;
+  --color-xl-calc: #ddebf7;
+  --color-xl-locked: #f2f2f2;
+  --color-xl-grid: #b4c6e7;
 }
 
 html,

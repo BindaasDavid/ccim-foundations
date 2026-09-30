@@ -6,9 +6,11 @@ const nav = [
   { to: "/listen", label: "Listen" },
   { to: "/library", label: "Source files" },
   { to: "/glossary", label: "Glossary" },
+  { to: "/practice", label: "Mock test" },
 ]
 
 const tools = [
+  { to: "/tools/calculator", label: "Calculator" },
   { to: "/tools/tvm", label: "TVM" },
   { to: "/tools/npv", label: "NPV / IRR" },
   { to: "/tools/amort", label: "Amortization" },
@@ -16,6 +18,7 @@ const tools = [
   { to: "/tools/effective-rent", label: "Effective rent" },
   { to: "/tools/irv", label: "IRV" },
   { to: "/tools/case", label: "Case lab" },
+  { to: "/tools/noi", label: "NOI forecast" },
   { to: "/tools/apod", label: "APOD" },
   { to: "/tools/cfaw", label: "CFAW" },
   { to: "/tools/acsw", label: "ACSW" },
