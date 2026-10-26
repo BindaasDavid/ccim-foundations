@@ -29,6 +29,16 @@ body {
   overflow-x: clip;
 }
 
+/* Grid items default to min-width: auto, so a wide table stretches the page
+   and gets clipped. Let the item shrink and scroll inside its own container. */
+main .grid > * {
+  min-width: 0;
+}
+
+main .overflow-x-auto {
+  max-width: 100%;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);

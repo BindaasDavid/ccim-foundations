@@ -55,7 +55,7 @@ function SkillsBody({ onReset }: { onReset: () => void }) {
   function table(title: string, rows: Row[], set: typeof setSRows, summary: ReturnType<typeof score>) {
     return (
       <div className="rounded-xl border border-line bg-paper">
-        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3">
           <h3 className="font-serif text-lg">{title}</h3>
           <span className="text-sm">{pct(summary.pct, 0)} of max</span>
         </div>
