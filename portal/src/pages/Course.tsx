@@ -4,7 +4,7 @@ import { AnswerKey, Page } from "../components/ui"
 
 export function Course() {
   return (
-    <Page kicker="Module packets" title="Course map" source="FOUND_M1 through FOUND_M10 plus the bound manual">
+    <Page kicker="Ten modules" title="Course map" source="Study notes for each module, with a workshop link">
       <div className="grid gap-4 md:grid-cols-2">
         {modules.map((m) => (
           <Link key={m.id} to={`/course/${m.id}`} className="rounded-xl border border-line bg-paper p-5 hover:border-gold">
@@ -26,7 +26,7 @@ export function CourseModule() {
   const m = modules.find((x) => x.id === id)
   if (!m) return <Page kicker="Course" title="Module not found">Missing module.</Page>
   return (
-    <Page kicker={`Module ${m.number}`} title={m.title} source={`${m.packet} · ${m.pages} pages`}>
+    <Page kicker={`Module ${m.number}`} title={m.title}>
       <section className="mb-8 rounded-xl border border-gold/50 bg-gold/10 p-6">
         <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">TLDR</p>
         <p className="font-serif mt-2 text-xl leading-snug text-ink">{m.tldr.line}</p>
@@ -50,7 +50,7 @@ export function CourseModule() {
       <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-8">
           <section>
-            <h3 className="text-sm font-semibold tracking-wide uppercase">After this packet you should</h3>
+            <h3 className="text-sm font-semibold tracking-wide uppercase">After this module you should</h3>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-ink/80">
               {m.outcomes.map((f) => (
                 <li key={f}>{f}</li>
@@ -95,9 +95,8 @@ export function CourseModule() {
         </div>
         <aside className="space-y-4">
           <div className="rounded-xl border border-line bg-paper p-5">
-            <p className="text-xs tracking-wide text-ink/50 uppercase">Official packet</p>
-            <p className="mt-2 text-sm">{m.packet}</p>
-            <p className="mt-1 text-xs text-ink/50">Work the printed activities there. Use the workshops to check math.</p>
+            <p className="text-xs tracking-wide text-ink/50 uppercase">Printed module</p>
+            <p className="mt-2 text-sm">Work the printed activities. Use the workshops to check the math.</p>
             <Link to={`/listen/${m.id}`} className="mt-4 block rounded-md bg-ink px-3 py-2 text-center text-sm text-cream hover:bg-ink-soft">
               Read this module aloud
             </Link>

@@ -1,14 +1,15 @@
-# Foundations Portal
+# Foundations portal
 
-Interactive study workspace for the CCIM Foundations support materials.
+Private study workspace for the CCIM Foundations course. React and Vite, in this folder. GitHub Pages publishes the production build. It is a study tool and a reference for calculators, not a marketing site.
 
 ```bash
 cd portal
 npm install
-python3 scripts/extract-readings.py
 npm run dev
 ```
 
-**Listen** reads modules 1–10 aloud from the Support Materials packets (personal study copy). Voices come from the operating system.
+**Listen** reads the study notes in `src/data/modules.ts` aloud in the browser. It does not load course-packet text.
 
-Official course PDFs and Excel files stay in `../Support Materials`. This app implements original study notes and independent calculators that follow the same analysis lines as the APOD, CFAW, ACSW, DCF, and financial-calculator workbooks.
+Official course files stay in `../Support Materials` (gitignored). They may inform the calculators. Their text is not part of the public site.
+
+The site sends `noindex, nofollow` and a `robots.txt` that disallows everything.

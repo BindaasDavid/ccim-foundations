@@ -2,7 +2,6 @@ export type CourseModule = {
   id: string
   number: number
   title: string
-  packet: string
   pages: number
   tldr: { line: string; bullets: string[]; answers?: { task: string; items: string[] }[] }
   outcomes: string[]
@@ -19,7 +18,6 @@ export const modules: CourseModule[] = [
     id: "1",
     number: 1,
     title: "Overview of Commercial Real Estate",
-    packet: "FOUND_M1_Overview_2025-07-14.pdf",
     pages: 20,
     tldr: {
       line: "CRE is two clients and two markets. Users buy space. Investors buy cash flow. The space market sets rent and vacancy; the capital market sets the return they will accept.",
@@ -56,7 +54,6 @@ export const modules: CourseModule[] = [
     id: "2",
     number: 2,
     title: "Markets, Trade Areas, Demographics, Knowledge, and Skills",
-    packet: "FOUND_M2_Markets_Trade_Areas_Demos_KS_2025-07-14.pdf",
     pages: 18,
     tldr: {
       line: "Pick a geography small enough to know and large enough to eat. Demographics show the trend. A trade area plus a skill stack is the business model.",
@@ -96,7 +93,6 @@ export const modules: CourseModule[] = [
     id: "3",
     number: 3,
     title: "Time Value of Money Concepts",
-    packet: "FOUND_M3_TVM_2025-07-14.pdf",
     pages: 40,
     tldr: {
       line: "Money has a time stamp. Compounding grows a present amount; discounting brings a future amount back. One family of keys: N, I/YR, PV, PMT, FV.",
@@ -131,7 +127,6 @@ export const modules: CourseModule[] = [
     id: "4",
     number: 4,
     title: "The Leasing Market",
-    packet: "FOUND_M4_Leasing_Market_2025-07-14.pdf",
     pages: 12,
     tldr: {
       line: "Vacancy is empty space as a percent of stock. Absorption is the change in occupied space. Cycle position tells you how hard to push rent.",
@@ -168,7 +163,6 @@ export const modules: CourseModule[] = [
     id: "5",
     number: 5,
     title: "Leases and Lease Clauses",
-    packet: "FOUND_M5_Lease_Clauses_2025-07-14.pdf",
     pages: 20,
     tldr: {
       line: "The lease is the cash-flow contract. Face rent is not what either party economically pays after stops, CAM, TIs, and free rent.",
@@ -206,7 +200,6 @@ export const modules: CourseModule[] = [
     id: "6",
     number: 6,
     title: "Business Development",
-    packet: "FOUND_M06_Business_Development_2025-07-14.pdf",
     pages: 34,
     tldr: {
       line: "Territory, prospecting math, then qualify. Weekly contacts are a derived number from the income goal, not a mood.",
@@ -244,7 +237,6 @@ export const modules: CourseModule[] = [
     id: "7",
     number: 7,
     title: "Investment Analysis Tools",
-    packet: "FOUND_M07_Investment_Analysis_Tools_2025-07-14.pdf",
     pages: 20,
     tldr: {
       line: "PRI → vacancy → GOI → opex → NOI → debt service → CFBT. Value ≈ NOI ÷ cap rate. The T-bar is the IRR input tape.",
@@ -283,7 +275,6 @@ export const modules: CourseModule[] = [
     id: "8",
     number: 8,
     title: "Using the Internal Rate of Return",
-    packet: "FOUND_M08_Using_IRR_2025-07-14.pdf",
     pages: 22,
     tldr: {
       line: "IRR is the discount rate that makes NPV of the cash-flow series equal zero. Beat the hurdle, or walk.",
@@ -319,7 +310,6 @@ export const modules: CourseModule[] = [
     id: "9",
     number: 9,
     title: "Mortgage Loans",
-    packet: "FOUND_M09_Mortgage_Loans_2025-07-14.pdf",
     pages: 32,
     tldr: {
       line: "A fully amortizing loan is an annuity. Payment splits into interest on the remaining balance and principal. A short term leaves a balloon.",
@@ -355,7 +345,6 @@ export const modules: CourseModule[] = [
     id: "10",
     number: 10,
     title: "Case Study: Office Building",
-    packet: "FOUND_M10_Case_Study_2025-07-23.pdf",
     pages: 48,
     tldr: {
       line: "Fill the vacant medical suite with the clean lease, not the concession-heavy one. Stabilized NOI is $73,464. Cap that at 7% and the ask is $1,050,000. Hold five years, sell off year-6 NOI, and before-tax IRR is 11.27%.",
@@ -363,6 +352,12 @@ export const modules: CourseModule[] = [
         "Recommend Prospect C / Tenant C. Year-1 owner cash is $20,520 ($10.26 psf). Prospect A is a year-1 loss after TIs and free rent.",
         "Buyer equity is $262,500 on a $787,500 loan. ADS is $63,807. Sale at $1,145,000. IRR 11.27%.",
       ],
+      // COPYRIGHT REVIEW — do not delete without David confirming.
+      // The task answers below read like a transcribed case answer key (numbered
+      // prompts, the city's demographic write-up, and the worked dollar lines),
+      // not a paraphrase. The summary line and two bullets just above restate
+      // those same results. Left in place on purpose so the case lab still has
+      // them. Listen does not read this block aloud.
       answers: [
         {
           task: "Task 1 — Market analysis",
@@ -471,7 +466,7 @@ export const modules: CourseModule[] = [
       "Do not skip Task 3–4; they feed the APOD vacancy and the lease-up story.",
       "IRR is the last step because it needs operations, loan, and sale together.",
     ],
-    practice: "Open the case lab and run Tasks 1–8 in order. Type the packet’s given figures. Confirm IRR only after sale proceeds sit on year 5.",
+    practice: "Open the case lab and run Tasks 1–8 in order. Type the figures given in the case. Confirm IRR only after sale proceeds sit on year 5.",
     walk: [
       {
         title: "Phase I — property and market",
@@ -503,7 +498,7 @@ export const modules: CourseModule[] = [
         points: [
           "PRI is the rent roll at 100% occupancy. Vacancy is a market allowance even when the building is full.",
           "Management is usually a percent of GOI. Add owner-paid opex. NOI is before debt.",
-          "Asking price = NOI ÷ cap rate. Round the way the packet tells you.",
+          "Asking price = NOI ÷ cap rate. Round the way the case rounds.",
         ],
       },
       {

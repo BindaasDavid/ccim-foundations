@@ -25,7 +25,7 @@ export function EffectiveRent() {
   }, [sf, face, years, freeMonths, ti, opex, stop])
 
   return (
-    <Page kicker="Module 5 / Task 2 & 4" title="Expense stop and effective rent" source="FOUND_M5_Lease_Clauses and FOUND_M10 Tasks 2 and 4">
+    <Page kicker="Module 5 / Tasks 2 and 4" title="Expense stop and effective rent" source="Lease cash flow, then the office-case concession comparison">
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <div className="grid gap-3 sm:grid-cols-2">

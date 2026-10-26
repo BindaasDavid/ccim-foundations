@@ -21,7 +21,7 @@ export function Probability() {
   }, [inventory, users, priceSf, term, yearsInPlace, share, commPct])
 
   return (
-    <Page kicker="Imported form" title="Probability of success" source="ProbabilityForm.xls — each total uses only the lines above it">
+    <Page kicker="Study form" title="Probability of success" source="Each total uses only the lines above it">
       <p className="mb-6 text-sm text-ink/65">
         Average user size is inventory divided by users. Lease value is rent times size times term.
         Transactions per year are users divided by years in place. Your commission is the market pool

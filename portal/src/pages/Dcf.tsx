@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { irr, npv, pmt, remainingBalance } from "../lib/finance"
-import { money, num, pct } from "../lib/format"
+import { irrText, money, num, pct } from "../lib/format"
 import { Page } from "../components/ui"
 import { Workbook, XlGrid, XlHead, XlInput, XlOut, XlRow, XlSection, XlTd, XlText } from "../components/workbook"
 
@@ -169,7 +169,7 @@ export function Dcf() {
     >
       <Workbook
         title="DCF Analysis"
-        version="Study recreation · V 12.2 tab order"
+        version="Study recreation"
         tabs={[
           { id: "input", label: "Input Sheets" },
           { id: "cf", label: "Cash Flows" },
@@ -567,7 +567,7 @@ export function Dcf() {
                 <tr>
                   <td className="border border-[#d6dce4] bg-[#f8f8f8] px-2">IRR =</td>
                   <td className="border border-[#8faadc] bg-[#ddebf7] px-2 text-right" colSpan={2}>
-                    {model.irrBt == null ? "—" : pct(model.irrBt)}
+                    {irrText(model.irrBt)}
                   </td>
                 </tr>
                 <tr>
@@ -604,7 +604,7 @@ export function Dcf() {
                 <tr>
                   <td className="border border-[#d6dce4] bg-[#f8f8f8] px-2">IRR =</td>
                   <td className="border border-[#8faadc] bg-[#ddebf7] px-2 text-right" colSpan={2}>
-                    {model.irrAt == null ? "—" : pct(model.irrAt)}
+                    {irrText(model.irrAt)}
                   </td>
                 </tr>
                 <tr>

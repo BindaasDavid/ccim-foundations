@@ -34,9 +34,10 @@ export function Market() {
   }
 
   return (
-    <Page kicker="Module 4 / Task 3" title="Vacancy and absorption" source="FOUND_M4_Leasing_Market and FOUND_M10 Task 3">
+    <Page kicker="Module 4 / Task 3" title="Vacancy and absorption" source="Building and submarket vacancy, then absorption over a period">
       <Card>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[40rem] text-sm">
           <thead>
             <tr className="text-left text-ink/50">
               <th className="pb-2">Building</th>
@@ -66,6 +67,7 @@ export function Market() {
             ))}
           </tbody>
         </table>
+        </div>
         <button className="mt-3 text-sm text-gold-deep" onClick={() => setRows([...rows, { name: "Building", sf: 0, vacant: 0, rentPsf: 0 }])}>
           Add building
         </button>

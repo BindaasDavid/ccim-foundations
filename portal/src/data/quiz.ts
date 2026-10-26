@@ -18,6 +18,12 @@ function q(
   return { id, module, prompt, choices, answer, why }
 }
 
+// COPYRIGHT REVIEW — do not delete without David confirming.
+// These are original multiple-choice study questions.
+// The ids below reuse specific case figures and form line numbers. Confirm the
+// prompts were not transcribed from the packet: 40, 69, 70, 73, 74, 75, 76, 95–100.
+// Item 75 is the closest to answer-key wording (it restates how a total is built).
+// The other items read as paraphrased concept checks.
 export const quizQuestions: QuizQuestion[] = [
   q(1, "1", "In commercial real estate, users and investors are buying different things. What is the clean split?", ["Users buy cash flow; investors buy occupancy.", "Users buy space; investors buy cash flow.", "Both buy the building title first.", "Users buy cap rates; investors buy rent."], 1, "Users need a place to operate. Investors buy the residual income those users generate, plus resale. Mixing the two is how people price the wrong risk."),
   q(2, "1", "The space market sets which pair of results?", ["Interest rates and LTV", "Rent and vacancy", "Cap rate and IRR", "Basis and recapture"], 1, "Space market = occupancy supply and demand. That shows up as rent and empty space. The capital market prices required return."),

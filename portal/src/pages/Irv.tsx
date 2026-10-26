@@ -17,7 +17,7 @@ export function Irv() {
   }, [noi, cap, value, solve])
 
   return (
-    <Page kicker="Module 7" title="IRV — income, rate, value" source="FOUND_M07_Investment_Analysis_Tools">
+    <Page kicker="Module 7" title="IRV — income, rate, value" source="Income = rate × value. Enter any two.">
       <div className="mb-4 flex flex-wrap gap-2">
         {(["Value", "NOI", "Cap"] as Solve[]).map((s) => (
           <button

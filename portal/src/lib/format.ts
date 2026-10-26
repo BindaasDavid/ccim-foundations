@@ -13,6 +13,12 @@ export function pct(n: number, digits = 2): string {
   return `${(n * 100).toFixed(digits)}%`
 }
 
+export const IRR_UNSOLVABLE = "IRR not solvable for these cash flows"
+
+export function irrText(rate: number | null, digits = 2): string {
+  return rate == null ? IRR_UNSOLVABLE : pct(rate, digits)
+}
+
 export function num(n: number, digits = 2): string {
   if (!Number.isFinite(n)) return "—"
   return n.toLocaleString(undefined, {
