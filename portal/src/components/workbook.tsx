@@ -52,8 +52,11 @@ export function Workbook({
 }
 
 export function XlGrid({ children, cols }: { children: ReactNode; cols?: string }) {
+  const preferred = cols ? cols.split(" ").reduce((sum, w) => sum + (Number.parseFloat(w) || 0), 0) : 0
+  // Narrow forms shrink into the phone width. Wide tapes keep their columns and scroll.
+  const wide = preferred >= 520
   return (
-    <table className="w-full min-w-max border-collapse text-[13px]">
+    <table className={`w-full border-collapse text-[13px] ${wide ? "min-w-max" : ""}`}>
       {cols ? (
         <colgroup>
           {cols.split(" ").map((w, i) => (
