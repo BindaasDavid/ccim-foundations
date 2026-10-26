@@ -347,92 +347,80 @@ export const modules: CourseModule[] = [
     title: "Case Study: Office Building",
     pages: 48,
     tldr: {
-      line: "Fill the vacant medical suite with the clean lease, not the concession-heavy one. Stabilized NOI is $73,464. Cap that at 7% and the ask is $1,050,000. Hold five years, sell off year-6 NOI, and before-tax IRR is 11.27%.",
+      line: "Cedar Court is an original 8,000 sf office example. Take the clean lease: year-1 owner cash is $32,000. Stabilized NOI is $96,000. At an 8% cap the ask is $1,200,000. Hold five years, sell off a $108,000 year-6 NOI, and the before-tax IRR is 16.56%.",
       bullets: [
-        "Recommend Prospect C / Tenant C. Year-1 owner cash is $20,520 ($10.26 psf). Prospect A is a year-1 loss after TIs and free rent.",
-        "Buyer equity is $262,500 on a $787,500 loan. ADS is $63,807. Sale at $1,145,000. IRR 11.27%.",
+        "Two offers for the empty 2,000 sf suite. The $24 psf offer with free rent and a tenant-improvement allowance loses $12,000 in year 1. The $20 psf offer with no concessions pays the owner $32,000.",
+        "Equity in is $360,000 against an $840,000 loan. Annual debt service is $64,946. Sale proceeds before tax are $540,570. Before-tax IRR on that series is 16.56%.",
       ],
-      // COPYRIGHT REVIEW — do not delete without David confirming.
-      // The task answers below read like a transcribed case answer key (numbered
-      // prompts, the city's demographic write-up, and the worked dollar lines),
-      // not a paraphrase. The summary line and two bullets just above restate
-      // those same results. Left in place on purpose so the case lab still has
-      // them. Listen does not read this block aloud.
       answers: [
         {
           task: "Task 1 — Market analysis",
           items: [
-            "1. Characterize the city’s population: growing city of 50,000 in a 225,000 county (5-year city 60,000 / county 270,000); median age 37; families plus a large retiree share; transit-oriented and walkable.",
-            "Workforce — a. White collar or blue collar? Majority white collar (60% / 40% blue collar). Professionally employed people who need office space.",
-            "Workforce — b. Stage in their working lives? Peak-earning / baby-boomer years (30–59 is 42% of the population).",
-            "Workforce — c. Effect on office demand? Strong demand for medical and personal services, professional office, and government-support space.",
-            "Lifestyle — d. Who is drawn to this city? People who want parks, walkability, transit, schools, and hospital access.",
-            "Lifestyle — e. Benefits of living here? Economic stability (government 35%), a medical base, and retiree demand.",
-            "Lifestyle — f. Families, singles, retirees, or other? Baby-boomer families plus a large retirement population.",
-            "g. Four+ representative sectors: (1) families (2) white-collar workers (3) government employees (4) retirees. Also school-age children, singles, and a growing international community.",
-            "h. Retail/office that stay strong (four+): (1) medical office (2) children’s retail (3) professional/service office (4) tutoring (5) sporting goods.",
-            "i. Medical uses for the vacant suite (four+): (1) obstetrics (2) dentistry / orthodontia (3) cardiology (4) sports medicine / chiropractic (5) oncology / gerontology.",
+            "Millford is an original town sketch: about 28,000 people in a county of 90,000, heading toward 32,000 and 98,000 in five years. Median age is 34. A community college and a small hospital set the daytime population.",
+            "Workforce is mixed, with a slight professional majority over trades and logistics. The large band is early- and mid-career (about ages 25–44), so demand is for modest suites, not headquarters floors.",
+            "That mix supports outpatient clinics, bookkeeping, tutoring, and light professional services. It is not a government town and it is not a high-rise market.",
+            "People who move here want a short commute, the river trail, and school seats. Households are mostly young families and renters who work in town.",
+            "Four uses that fit a vacant 2,000 sf suite: a pediatric clinic, a dental office, a tax shop, and a physical-therapy practice.",
           ],
         },
         {
           task: "Task 2 — Operating expense stop",
           items: [
-            "1. Effect on Tenant A this year (2,200 sf at $11 psf): annual rent $11.00 psf = $24,200. Additional payment from the $1.54 stop ($0.20 psf CAM) = $440. Total tenant responsibilities = $11.20 psf / $24,640.",
-            "2. New effective annual rate = $24,640 ÷ 2,200 sf = $11.20 psf.",
+            "A 2,000 sf tenant at $19 per sf pays 2,000 × 19 = $38,000 of face rent.",
+            "The stop falls from $4.50 to $4.00, so the tenant pays the $0.50 gap: 0.50 × 2,000 = $1,000.",
+            "Year-1 tenant cost = 38,000 + 1,000 = $39,000. Effective rate = 39,000 ÷ 2,000 = $19.50 per sf.",
           ],
         },
         {
           task: "Task 3 — Vacancy and absorption",
           items: [
-            "1. Submarket vacancy = 9,250 ÷ 30,500 = 0.30, or 30%.",
-            "2. Vacancy by building: Park Plaza 2,000 ÷ 10,000 = 20%; Comparable A 3,000 ÷ 12,000 = 25%; Comparable B 4,250 ÷ 8,500 = 50%.",
-            "3. Occupied space in the three-building submarket = 30,500 − 9,250 = 21,250 sf.",
-            "4. GOI at a 30% vacancy: Park Plaza $120,000 − $36,000 = $84,000; Comparable A $132,000 − $39,600 = $92,400; Comparable B $87,125 − $26,138 = $60,987.",
-            "5. Absorption = EOY occupied 26,375 − BOY occupied 21,250 = 5,125 sf.",
+            "Building vacancy: Cedar Court 2,000 ÷ 8,000 = 25%; Lane Building 1,200 ÷ 12,000 = 10%; Pike Offices 2,800 ÷ 10,000 = 28%.",
+            "Submarket vacancy = (2,000 + 1,200 + 2,800) ÷ (8,000 + 12,000 + 10,000) = 6,000 ÷ 30,000 = 20%. Occupied stock = 30,000 − 6,000 = 24,000 sf.",
+            "At a 20% stress vacancy, gross operating income is potential rent × 0.80: Cedar Court 150,000 × 0.80 = $120,000; Lane 200,000 × 0.80 = $160,000; Pike 100,000 × 0.80 = $80,000.",
+            "If occupied stock ends the year at 27,000 sf, absorption = 27,000 − 24,000 = 3,000 sf.",
           ],
         },
         {
           task: "Task 4 — Concessions and effective rent",
           items: [
-            "1. Prospect A, year-1 owner cash: base rent $27,000; owner opex to the $1.74 stop $3,480; concessions and allowances $39,750; total = ($16,230).",
-            "2. Prospect A annual effective rate, year 1 = ($16,230) ÷ 2,000 sf = ($8.12) psf.",
-            "3. Prospect C, year-1 owner cash: base rent $24,000; owner opex to the stop $3,480; concessions $0; total = $20,520.",
-            "4. Prospect C annual effective rate, year 1 = $20,520 ÷ 2,000 sf = $10.26 psf.",
-            "Recommendation: take Prospect C / Tenant C. The owner’s first job is to fill the vacancy, and C is the only year-1 cash-positive lease.",
+            "The owner pays the $4.00 stop on 2,000 sf: 4 × 2,000 = $8,000.",
+            "Elm offer: face rent 24 × 2,000 = $48,000. Four free months = 48,000 × 4 ÷ 12 = $16,000. Tenant improvements 18 × 2,000 = $36,000. Year-1 owner cash = 48,000 − 8,000 − 16,000 − 36,000 = −$12,000, or −12,000 ÷ 2,000 = −$6.00 per sf.",
+            "Oak offer: face rent 20 × 2,000 = $40,000, with no free rent and no tenant improvements. Year-1 owner cash = 40,000 − 8,000 = $32,000, or 32,000 ÷ 2,000 = $16.00 per sf.",
+            "Take Oak. Elm’s higher face rent does not survive the concessions.",
           ],
         },
         {
-          task: "Task 5 — APOD and value",
+          task: "Task 5 — Operating statement and value",
           items: [
-            "1. APOD lines (nearest dollar): Line 2 Vacancy & credit losses $7,434; Line 3 Effective rental income $98,766; Line 5 GOI $98,766; Line 10 Off-site management $6,914; Line 29 Total operating expenses $25,302; Line 30 NOI $73,464; Line 35 CFBT $25,464 (after $48,000 ADS).",
-            "Line 29 is the sum of owner-paid opex on 10,000 sf: Line 7 Real estate taxes $10,000 ($1.00 psf); Line 9 Property insurance $3,000 ($0.30); Line 10 Off-site management $6,914 (7% of GOI); Line 14 Repairs and maintenance $2,000 ($0.20 exterior/CAM); Line 15 Common-area electric $600 ($0.06); Line 16 Water and sewer $600 ($0.06); Lines 19–21 Accounting/legal/permits/advertising $988 (combined; owner-paid, not in the stop); Line 24 Landscaping $1,200 ($0.12). Lines 8 and 11–13 are $0 (payroll sits inside the management fee). Check: $17,400 stop ($1.74 × 10,000) + $6,914 + $988 = $25,302.",
-            "2. Ask price = $73,464 ÷ 0.07 = $1,049,485, rounded to $1,050,000.",
+            "Four 2,000 sf suites: 2,000 × 19 = 38,000; 2,000 × 20 = 40,000; 2,000 × 18 = 36,000; 2,000 × 18 = 36,000. Potential rent = $150,000.",
+            "Vacancy allowance 8% = 0.08 × 150,000 = $12,000. With no other income, gross operating income = 150,000 − 12,000 = $138,000.",
+            "Stop items on 8,000 sf at $4.00 = $32,000: taxes 18,000, insurance 4,000, repairs 3,200, common electric 2,400, water 2,000, landscaping 2,400. Check: 18,000 + 4,000 + 3,200 + 2,400 + 2,000 + 2,400 = 32,000.",
+            "Management is 5% of 138,000 = $6,900. Accounting and legal are $3,100. Operating expenses = 32,000 + 6,900 + 3,100 = $42,000.",
+            "NOI = 138,000 − 42,000 = $96,000. Asking price = 96,000 ÷ 0.08 = $1,200,000.",
           ],
         },
         {
           task: "Task 6 — Six-year NOI",
           items: [
-            "1. NOI worksheet: Y1 $73,464; Y2 $73,464; Y3 $75,946; Y4 $78,008; Y5 $78,008; Y6 $80,173. PRI by year: $106,200 / $106,200 / $109,100 / $111,510 / $111,510 / $114,041.",
-            "2. Enter those NOI figures on CFAW line 7 and line 17. Year-6 NOI on the form is $80,173.",
+            "NOI by year is 96,000; 96,000; 100,000; 100,000; 104,000; 108,000.",
+            "Years 1 and 2 are the stabilized $96,000. A rent step adds $4,000 in year 3 and that $100,000 holds in year 4. Another $4,000 step in year 5 makes $104,000. Year 6 is $108,000 so the sale can be capped; the hold itself is five years.",
           ],
         },
         {
-          task: "Task 7 — Mortgage loans",
+          task: "Task 7 — Mortgage loan",
           items: [
-            "1. Monthly mortgage payment = $5,317.26 (PV $787,500, I/YR 6.5%, 12 P/YR, N = 25 × 12).",
-            "2. Amortize the five-year hold (Tab 6 / annual summary). ADS = $63,807.",
-            "3. Remaining loan balance at EOY 5 ≈ $713,177.",
-            "4. Mortgage Data box: periodic payment $5,317.26; annual debt service $63,807.",
-            "5. CFAW line 18 (ADS, not interest only) = $63,807 each year.",
-            "6. CFAW line 22 CFBT: Y1 $9,657; Y2 $9,657; Y3 $12,139; Y4 $14,201; Y5 $14,201.",
+            "The loan is 70% of the $1,200,000 price: 0.70 × 1,200,000 = $840,000. Equity = 1,200,000 − 840,000 = $360,000.",
+            "At 6% interest, monthly payments, and a 25-year amortization, the payment is $5,412.13. Annual debt service = 5,412.13 × 12 = $64,945.56, nearest dollar $64,946.",
+            "The balance after 60 payments is $755,429.53, nearest dollar $755,430.",
+            "Cash flow before tax is NOI minus $64,946. Years 1 and 2: 96,000 − 64,946 = $31,054. Years 3 and 4: 100,000 − 64,946 = $35,054. Year 5: 104,000 − 64,946 = $39,054.",
           ],
         },
         {
           task: "Task 8 — Before-tax IRR",
           items: [
-            "1. Selling price = year-6 NOI $80,173 ÷ 0.07 = $1,145,328, rounded to $1,145,000.",
-            "2. ACSW lines 17–22: sale $1,145,000 − cost of sale 5% ($57,250) − EOY-5 mortgage ≈ $713,177 = sale proceeds before tax ≈ $374,573.",
-            "3. T-bar: t = 0 (−$262,500); Y1 $9,657; Y2 $9,657; Y3 $12,139; Y4 $14,201; Y5 $14,201 + $374,573. Before-tax IRR = 11.27%.",
+            "Sale price = year-6 NOI 108,000 ÷ 0.08 = $1,350,000. Cost of sale at 4% = 0.04 × 1,350,000 = $54,000.",
+            "Sale proceeds before tax = 1,350,000 − 54,000 − 755,430 = $540,570.",
+            "Nearest-dollar series: time 0 is −360,000; years 1 and 2 are 31,054; years 3 and 4 are 35,054; year 5 is 39,054 + 540,570 = 579,624. Before-tax IRR on that series is 16.56%.",
           ],
         },
       ],

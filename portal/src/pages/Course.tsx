@@ -37,7 +37,7 @@ export function CourseModule() {
         </ul>
         {m.tldr.answers && (
           <div id="answers" className="mt-6 space-y-4 border-t border-gold/40 pt-5">
-            <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">Published task answers</p>
+            <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">Worked example</p>
             {m.tldr.answers.map((a) => (
               <AnswerKey key={a.task} title={a.task} items={a.items} />
             ))}

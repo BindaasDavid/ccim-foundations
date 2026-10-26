@@ -177,7 +177,7 @@ export function Sheet({
 export function AnswerKey({ title, items }: { title: string; items: string[] }) {
   return (
     <div className="mt-4 rounded-lg border-2 border-gold bg-gold/15 p-4">
-      <p className="text-xs font-semibold tracking-[0.16em] text-gold-deep uppercase">Published answer · {title}</p>
+      <p className="text-xs font-semibold tracking-[0.16em] text-gold-deep uppercase">Worked example · {title}</p>
       <ol className="mt-2 space-y-2 text-sm text-ink">
         {items.map((item) => (
           <li key={item} className="leading-relaxed">

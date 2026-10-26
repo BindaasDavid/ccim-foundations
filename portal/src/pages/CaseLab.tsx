@@ -174,7 +174,7 @@ export function CaseLab() {
   return (
     <Page kicker="Module 10" title="Office case study" source="Tasks 1–8, with the worked figures on this page">
       <section id="answers" className="mb-8 rounded-xl border-2 border-gold bg-gold/15 p-6">
-        <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">TLDR · published answers</p>
+        <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">Worked example</p>
         <p className="font-serif mt-2 text-xl leading-snug text-ink">{meta.tldr.line}</p>
         <ul className="mt-4 list-disc space-y-2 pl-5 text-ink">
           {meta.tldr.bullets.map((b) => (
