@@ -1,4 +1,6 @@
-import type { ReactNode } from "react"
+import { createContext, useContext, useId, type ReactNode } from "react"
+
+const XlFieldLabel = createContext<string | null>(null)
 
 export function Workbook({
   title,
@@ -17,7 +19,7 @@ export function Workbook({
 }) {
   return (
     <div className="overflow-hidden rounded-xl border border-[#8faadc] bg-white shadow-sm">
-      <div className="flex items-center justify-between bg-[#1f4e79] px-4 py-2 text-white">
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-[#1f4e79] px-4 py-2 text-white">
         <p className="text-sm font-semibold tracking-wide">{title}</p>
         {version ? <p className="text-[11px] text-white/70">{version}</p> : null}
       </div>
@@ -35,7 +37,7 @@ export function Workbook({
           </button>
         ))}
       </div>
-      <div className="bg-white p-4">{children}</div>
+      <div className="overflow-x-auto bg-white p-3 sm:p-4">{children}</div>
       <div className="flex flex-wrap gap-3 border-t border-[#d6dce4] bg-[#f2f2f2] px-4 py-2 text-[10px] uppercase tracking-wide text-[#595959]">
         <span className="inline-flex items-center gap-1.5">
           <i className="inline-block h-3 w-3 border border-[#bf8f00] bg-[#fff2cc]" /> Input
@@ -53,7 +55,7 @@ export function Workbook({
 
 export function XlGrid({ children, cols }: { children: ReactNode; cols?: string }) {
   return (
-    <table className="w-full border-collapse text-[13px]">
+    <table className="w-full min-w-[20rem] border-collapse text-[13px]">
       {cols ? (
         <colgroup>
           {cols.split(" ").map((w, i) => (
@@ -98,12 +100,19 @@ export function XlInput({
   onChange,
   disabled,
   align = "right",
+  label,
+  embedLabel = true,
 }: {
   value: number | string
   onChange?: (n: number) => void
   disabled?: boolean
   align?: "left" | "right"
+  label?: string
+  embedLabel?: boolean
 }) {
+  const rowLabel = useContext(XlFieldLabel)
+  const name = label ?? rowLabel ?? undefined
+  const id = useId()
   if (disabled || !onChange) {
     return (
       <span className={`block min-h-[28px] border px-2 py-1 text-right ${cellTone("locked")}`}>
@@ -111,24 +120,45 @@ export function XlInput({
       </span>
     )
   }
-  return (
+  const field = (
     <input
+      id={embedLabel && name ? id : undefined}
+      aria-label={embedLabel ? name : undefined}
       type="number"
       step="any"
-      className={`w-full border px-2 py-1 outline-none ${align === "right" ? "text-right" : ""} ${cellTone("input")}`}
+      className={`w-full min-w-0 border px-2 py-1 outline-none ${align === "right" ? "text-right" : ""} ${cellTone("input")}`}
       value={value === 0 || value === "" ? "" : value}
       onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
     />
   )
+  if (!embedLabel || !name) return field
+  return (
+    <>
+      <label htmlFor={id} className="sr-only">
+        {name}
+      </label>
+      {field}
+    </>
+  )
 }
 
-export function XlText({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+export function XlText({ value, onChange, label }: { value: string; onChange: (v: string) => void; label?: string }) {
+  const rowLabel = useContext(XlFieldLabel)
+  const name = label ?? rowLabel ?? "Text"
+  const id = useId()
   return (
-    <input
-      className={`w-full border px-2 py-1 text-left outline-none ${cellTone("input")}`}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
+    <>
+      <label htmlFor={id} className="sr-only">
+        {name}
+      </label>
+      <input
+        id={id}
+        aria-label={name}
+        className={`w-full min-w-0 border px-2 py-1 text-left outline-none ${cellTone("input")}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </>
   )
 }
 
@@ -146,11 +176,13 @@ export function XlRow({
   children?: ReactNode
 }) {
   return (
+    <XlFieldLabel.Provider value={label}>
     <tr>
       {n != null ? <td className="w-10 border border-[#d6dce4] px-2 py-0.5 text-center text-[11px] text-[#7f7f7f]">{n}</td> : null}
       <td className={`border border-[#d6dce4] px-3 py-0.5 ${cellTone("label")}`}>{label}</td>
       {children}
     </tr>
+    </XlFieldLabel.Provider>
   )
 }
 

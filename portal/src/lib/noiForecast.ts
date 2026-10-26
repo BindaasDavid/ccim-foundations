@@ -14,19 +14,19 @@ export type NoiDrivers = {
   buildingSf: number
 }
 
-export const parkPlazaTenants: TenantRow[] = [
-  { name: "Tenant A, 2,200 sf", sf: 2200, rents: [24200, 24200, 24200, 25410, 25410, 26681] },
-  { name: "Tenant B, 2,800 sf", sf: 2800, rents: [28000, 28000, 29400, 29400, 29400, 29400] },
-  { name: "Tenant C, 2,000 sf", sf: 2000, rents: [24000, 24000, 24000, 25200, 25200, 26460] },
-  { name: "Tenant D, 3,000 sf", sf: 3000, rents: [30000, 30000, 31500, 31500, 31500, 31500] },
+export const exampleTenants: TenantRow[] = [
+  { name: "Suite 100", sf: 3000, rents: [54000, 54000, 56700, 56700, 59535, 59535] },
+  { name: "Suite 200", sf: 4000, rents: [72000, 72000, 72000, 75600, 75600, 79380] },
+  { name: "Suite 300", sf: 2500, rents: [40000, 40000, 42000, 42000, 42000, 44100] },
+  { name: "Suite 400", sf: 2500, rents: [37500, 37500, 37500, 39375, 39375, 39375] },
 ]
 
-export const parkPlazaDrivers: NoiDrivers = {
-  vacPct: 7,
-  mgmtPct: 7,
+export const exampleDrivers: NoiDrivers = {
+  vacPct: 5,
+  mgmtPct: 4,
   adminPct: 1,
-  stopPsf: 1.74,
-  buildingSf: 10000,
+  stopPsf: 2.25,
+  buildingSf: 12000,
 }
 
 export type NoiYear = {

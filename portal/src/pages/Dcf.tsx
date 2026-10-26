@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { irr, npv, pmt, remainingBalance } from "../lib/finance"
-import { money, num, pct } from "../lib/format"
-import { Page } from "../components/ui"
+import { irrText, money, num, pct } from "../lib/format"
+import { Page, ResetExample } from "../components/ui"
 import { Workbook, XlGrid, XlHead, XlInput, XlOut, XlRow, XlSection, XlTd, XlText } from "../components/workbook"
 
 const YEARS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
@@ -11,6 +11,11 @@ function grow(base: number, ratePct: number, year: number) {
 }
 
 export function Dcf() {
+  const [epoch, setEpoch] = useState(0)
+  return <DcfBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function DcfBody({ onReset }: { onReset: () => void }) {
   const [tab, setTab] = useState("input")
   const [name, setName] = useState("Subject property")
   const [location, setLocation] = useState("")
@@ -165,11 +170,12 @@ export function Dcf() {
     <Page
       kicker="DCF model"
       title="Discounted cash flow workbook"
-      source="Independent recreation of Input / Cash Flows / Sale / MIP sheet structure"
+      source="Inputs, cash flows, sale, and investment measures on one worksheet."
     >
+      <ResetExample onClick={onReset} />
       <Workbook
-        title="DCF Analysis"
-        version="Study recreation · V 12.2 tab order"
+        title="DCF analysis"
+        version="Study worksheet"
         tabs={[
           { id: "input", label: "Input Sheets" },
           { id: "cf", label: "Cash Flows" },
@@ -567,7 +573,7 @@ export function Dcf() {
                 <tr>
                   <td className="border border-[#d6dce4] bg-[#f8f8f8] px-2">IRR =</td>
                   <td className="border border-[#8faadc] bg-[#ddebf7] px-2 text-right" colSpan={2}>
-                    {model.irrBt == null ? "—" : pct(model.irrBt)}
+                    {irrText(model.irrBt)}
                   </td>
                 </tr>
                 <tr>
@@ -604,7 +610,7 @@ export function Dcf() {
                 <tr>
                   <td className="border border-[#d6dce4] bg-[#f8f8f8] px-2">IRR =</td>
                   <td className="border border-[#8faadc] bg-[#ddebf7] px-2 text-right" colSpan={2}>
-                    {model.irrAt == null ? "—" : pct(model.irrAt)}
+                    {irrText(model.irrAt)}
                   </td>
                 </tr>
                 <tr>

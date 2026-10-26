@@ -1,31 +1,45 @@
-import { useMemo, useState } from "react"
+import { useId, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { amortize, pmt } from "../lib/finance"
 import { money } from "../lib/format"
-import { buildNoiForecast, parkPlazaDrivers, parkPlazaTenants } from "../lib/noiForecast"
-import { Page } from "../components/ui"
+import { buildNoiForecast, exampleDrivers, exampleTenants } from "../lib/noiForecast"
+import { Page, ResetExample } from "../components/ui"
 
 const YEARS = [1, 2, 3, 4, 5, 6] as const
 
-function InNum({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+function InNum({ value, onChange, label }: { value: number; onChange: (n: number) => void; label: string }) {
+  const id = useId()
   return (
-    <input
-      type="number"
-      step="any"
-      className="w-full border border-[#bf8f00] bg-[#fff2cc] px-1.5 py-0.5 text-right text-[12px] outline-none"
-      value={value === 0 ? "" : value}
-      onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
-    />
+    <>
+      <label htmlFor={id} className="sr-only">
+        {label}
+      </label>
+      <input
+        id={id}
+        type="number"
+        step="any"
+        className="w-full border border-[#bf8f00] bg-[#fff2cc] px-1.5 py-0.5 text-right text-[12px] outline-none"
+        value={value === 0 ? "" : value}
+        onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
+      />
+    </>
   )
 }
 
-function InText({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function InText({ value, onChange, label }: { value: string; onChange: (v: string) => void; label: string }) {
+  const id = useId()
   return (
-    <input
-      className="w-full border border-[#bf8f00] bg-[#fff2cc] px-1.5 py-0.5 text-left text-[12px] outline-none"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
+    <>
+      <label htmlFor={id} className="sr-only">
+        {label}
+      </label>
+      <input
+        id={id}
+        className="w-full border border-[#bf8f00] bg-[#fff2cc] px-1.5 py-0.5 text-left text-[12px] outline-none"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </>
   )
 }
 
@@ -42,16 +56,21 @@ function setAt(arr: number[], i: number, n: number) {
 }
 
 export function Cfaw() {
-  const seed = useMemo(() => buildNoiForecast(parkPlazaTenants, parkPlazaDrivers), [])
+  const [epoch, setEpoch] = useState(0)
+  return <CfawBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
 
-  const [name, setName] = useState("Park Plaza Task 8-6")
+function CfawBody({ onReset }: { onReset: () => void }) {
+  const seed = useMemo(() => buildNoiForecast(exampleTenants, exampleDrivers), [])
+
+  const [name, setName] = useState("Example office")
   const [forWhom, setForWhom] = useState("Owner")
-  const [by, setBy] = useState("CCIM")
+  const [by, setBy] = useState("Study notes")
   const [when, setWhen] = useState("Today")
-  const [price, setPrice] = useState(1050000)
+  const [price, setPrice] = useState(2400000)
   const [acq, setAcq] = useState(0)
   const [loanFees, setLoanFees] = useState(0)
-  const [loan1, setLoan1] = useState(787500)
+  const [loan1, setLoan1] = useState(1600000)
   const [loan2, setLoan2] = useState(0)
   const [rate1, setRate1] = useState(6.5)
   const [rate2, setRate2] = useState(0)
@@ -115,15 +134,16 @@ export function Cfaw() {
     <Page
       kicker="Imported form"
       title="Cash Flow Analysis Worksheet"
-      source="Independent recreation of CFAW_6Year_eForm — Park Plaza Tasks 6–8 figures are seeded"
+      source="Six years of taxable income and cash flow. Yellow cells are inputs."
     >
+      <ResetExample onClick={onReset} />
       <p className="mb-4 text-sm text-ink/65">
-        This is the printed CFAW, not the earlier simplified calculator. Yellow cells are inputs. Blue
-        cells total only the lines named on that row. Seeded from the{" "}
+        Yellow cells are inputs. Blue cells total the lines named on that row. The opening rent, vacancy,
+        and expenses match the{" "}
         <Link className="text-gold-deep" to="/tools/noi">
-          Task 6 NOI forecast
+          NOI forecast
         </Link>{" "}
-        and Task 7 loan (PV $787,500, 6.5%, 25 years).
+        example. The sample loan is $1,600,000 at 6.5% over 25 years.
       </p>
 
       <div className="overflow-x-auto rounded-sm border-2 border-black bg-white p-4 text-[#111]">
@@ -143,7 +163,7 @@ export function Cfaw() {
                 <tr key={label}>
                   <td className="w-36 py-0.5">{label}</td>
                   <td>
-                    <InText value={value} onChange={set} />
+                    <InText label={label} value={value} onChange={set} />
                   </td>
                 </tr>
               ))}
@@ -154,19 +174,19 @@ export function Cfaw() {
               <tr>
                 <td className="w-44 py-0.5">Purchase Price</td>
                 <td>
-                  <InNum value={price} onChange={setPrice} />
+                  <InNum label="Purchase price" value={price} onChange={setPrice} />
                 </td>
               </tr>
               <tr>
                 <td className="py-0.5">Plus Acquisition Costs</td>
                 <td>
-                  <InNum value={acq} onChange={setAcq} />
+                  <InNum label="Acquisition costs" value={acq} onChange={setAcq} />
                 </td>
               </tr>
               <tr>
                 <td className="py-0.5">Plus Loan Fees / Costs</td>
                 <td>
-                  <InNum value={loanFees} onChange={setLoanFees} />
+                  <InNum label="Loan fees and costs" value={loanFees} onChange={setLoanFees} />
                 </td>
               </tr>
               <tr>
@@ -198,46 +218,46 @@ export function Cfaw() {
               <tr>
                 <td className="border border-black px-2">Amount</td>
                 <td className="border border-black p-0.5">
-                  <InNum value={loan1} onChange={setLoan1} />
+                  <InNum label="First mortgage amount" value={loan1} onChange={setLoan1} />
                 </td>
                 <td className="border border-black p-0.5">
-                  <InNum value={loan2} onChange={setLoan2} />
+                  <InNum label="Second mortgage amount" value={loan2} onChange={setLoan2} />
                 </td>
               </tr>
               <tr>
                 <td className="border border-black px-2">Interest Rate</td>
                 <td className="border border-black p-0.5">
-                  <InNum value={rate1} onChange={setRate1} />
+                  <InNum label="First mortgage interest rate" value={rate1} onChange={setRate1} />
                 </td>
                 <td className="border border-black p-0.5">
-                  <InNum value={rate2} onChange={setRate2} />
+                  <InNum label="Second mortgage interest rate" value={rate2} onChange={setRate2} />
                 </td>
               </tr>
               <tr>
                 <td className="border border-black px-2">Amortization Period</td>
                 <td className="border border-black p-0.5">
-                  <InNum value={amort1} onChange={setAmort1} />
+                  <InNum label="First mortgage amortization years" value={amort1} onChange={setAmort1} />
                 </td>
                 <td className="border border-black p-0.5">
-                  <InNum value={amort2} onChange={setAmort2} />
+                  <InNum label="Second mortgage amortization years" value={amort2} onChange={setAmort2} />
                 </td>
               </tr>
               <tr>
                 <td className="border border-black px-2">Loan Term</td>
                 <td className="border border-black p-0.5">
-                  <InNum value={term1} onChange={setTerm1} />
+                  <InNum label="First mortgage term" value={term1} onChange={setTerm1} />
                 </td>
                 <td className="border border-black p-0.5">
-                  <InNum value={term2} onChange={setTerm2} />
+                  <InNum label="Second mortgage term" value={term2} onChange={setTerm2} />
                 </td>
               </tr>
               <tr>
                 <td className="border border-black px-2">Payments / Year</td>
                 <td className="border border-black p-0.5">
-                  <InNum value={ppy1} onChange={setPpy1} />
+                  <InNum label="First mortgage payments per year" value={ppy1} onChange={setPpy1} />
                 </td>
                 <td className="border border-black p-0.5">
-                  <InNum value={ppy2} onChange={setPpy2} />
+                  <InNum label="Second mortgage payments per year" value={ppy2} onChange={setPpy2} />
                 </td>
               </tr>
               <tr>
@@ -261,7 +281,7 @@ export function Cfaw() {
               <tr>
                 <td className="border border-black px-2">Loan Fees / Costs</td>
                 <td className="border border-black p-0.5">
-                  <InNum value={loanFees} onChange={setLoanFees} />
+                  <InNum label="Loan fees and costs" value={loanFees} onChange={setLoanFees} />
                 </td>
                 <td className="border border-black bg-[#f2f2f2]" />
               </tr>
@@ -280,26 +300,26 @@ export function Cfaw() {
               <tr>
                 <td className="border border-black px-2">Value</td>
                 <td className="border border-black p-0.5">
-                  <InNum value={impr} onChange={setImpr} />
+                  <InNum label="Improvements value" value={impr} onChange={setImpr} />
                 </td>
                 <td className="border border-black p-0.5">
-                  <InNum value={pp} onChange={setPp} />
+                  <InNum label="Personal property value" value={pp} onChange={setPp} />
                 </td>
               </tr>
               <tr>
                 <td className="border border-black px-2">C. R. Method</td>
                 <td className="border border-black p-0.5">
-                  <InText value={crMethod} onChange={setCrMethod} />
+                  <InText label="Cost recovery method" value={crMethod} onChange={setCrMethod} />
                 </td>
                 <td className="border border-black bg-[#f2f2f2]" />
               </tr>
               <tr>
                 <td className="border border-black px-2">Useful Life</td>
                 <td className="border border-black p-0.5">
-                  <InNum value={lifeImpr} onChange={setLifeImpr} />
+                  <InNum label="Improvements useful life" value={lifeImpr} onChange={setLifeImpr} />
                 </td>
                 <td className="border border-black p-0.5">
-                  <InNum value={lifePp} onChange={setLifePp} />
+                  <InNum label="Personal property useful life" value={lifePp} onChange={setLifePp} />
                 </td>
               </tr>
               <tr>
@@ -359,7 +379,7 @@ export function Cfaw() {
               <td className="border border-black px-2">
                 − Tax Liability (Savings) at
                 <span className="ml-2 inline-block w-16">
-                  <InNum value={taxRate} onChange={setTaxRate} />
+                  <InNum label="Tax rate percent" value={taxRate} onChange={setTaxRate} />
                 </span>
                 %
               </td>
@@ -403,9 +423,8 @@ export function Cfaw() {
         </table>
 
         <p className="mt-3 text-[11px] text-[#555]">
-          Periodic payment {money(pmt1, 2)} · ADS {money(ads, 0)} · Initial investment {money(equity, 0)}. Line 7
-          Year 6 should read {money(cols[5]?.noi ?? 0, 0)} for the Park Plaza seed (packet $80,173). Before-tax
-          work leaves line 16 at 0%.
+          Periodic payment {money(pmt1, 2)} · annual debt service {money(ads, 0)} · initial investment {money(equity, 0)}.
+          Year-6 NOI on this example is {money(cols[5]?.noi ?? 0, 0)}. Leave the tax rate at 0% for a before-tax view.
         </p>
       </div>
     </Page>
@@ -436,7 +455,7 @@ function Line({
       </td>
       {values.map((v, i) => (
         <td key={i} className="border border-black p-0.5">
-          {onChange ? <InNum value={v} onChange={(n) => onChange(i, n)} /> : <Out n={v} />}
+          {onChange ? <InNum label={`${label} year ${i + 1}`} value={v} onChange={(n) => onChange(i, n)} /> : <Out n={v} />}
         </td>
       ))}
     </tr>

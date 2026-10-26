@@ -1,10 +1,15 @@
 import { useMemo, useState } from "react"
 import { money, pct } from "../lib/format"
-import { Card, Field, Page, Stat } from "../components/ui"
+import { Card, Field, Page, ResetExample, Stat } from "../components/ui"
 
 type Solve = "Value" | "NOI" | "Cap"
 
 export function Irv() {
+  const [epoch, setEpoch] = useState(0)
+  return <IrvBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function IrvBody({ onReset }: { onReset: () => void }) {
   const [noi, setNoi] = useState(50000)
   const [cap, setCap] = useState(6)
   const [value, setValue] = useState(833333)
@@ -17,7 +22,8 @@ export function Irv() {
   }, [noi, cap, value, solve])
 
   return (
-    <Page kicker="Module 7" title="IRV — income, rate, value" source="FOUND_M07_Investment_Analysis_Tools">
+    <Page kicker="Value" title="IRV — income, rate, value" source="Income = rate × value. Solve for the missing one.">
+      <ResetExample onClick={onReset} />
       <div className="mb-4 flex flex-wrap gap-2">
         {(["Value", "NOI", "Cap"] as Solve[]).map((s) => (
           <button

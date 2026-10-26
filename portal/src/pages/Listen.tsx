@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { modules } from "../data/modules"
-import { flatten, loadReading, type ReadingDoc } from "../lib/readings"
+import { moduleNotes, type NoteBlock } from "../lib/notes"
 import { HUMAN_VOICES, isHumanReady, loadHumanVoice, speakHuman, type HumanVoiceId } from "../lib/humanTts"
 import { CONVERSATIONAL_RATE, PASSAGE_GAP_MS, forSpeech, pauseAfter, pickEnglishVoice, rankVoices, splitForCadence } from "../lib/speech"
 import { Page } from "../components/ui"
@@ -12,18 +12,17 @@ function minutes(words: number) {
 
 export function ListenIndex() {
   return (
-    <Page kicker="Read aloud" title="Listen to modules 1–10" source="Spoken from the official module packets on this computer">
+    <Page kicker="Read aloud" title="Listen to the module notes">
       <p className="mb-6 max-w-2xl text-sm text-ink/65">
-        Human voice is the neural reader (Liam — English male tenor). The first play downloads a
-        model once and keeps it on this computer. That is what sounds like a person. Reed is only the
-        Mac backup.
+        This reads the study notes already on the site. The first human-voice play downloads a model once and
+        keeps it in this browser. If that voice is not ready, the computer’s English voice reads instead.
       </p>
       <div className="grid gap-3 md:grid-cols-2">
         {modules.map((m) => (
           <Link key={m.id} to={`/listen/${m.id}`} className="rounded-xl border border-line bg-paper p-5 hover:border-gold">
             <p className="text-xs text-gold-deep">Module {m.number}</p>
-            <h3 className="font-serif mt-1 text-xl">{m.title}</h3>
-            <p className="mt-2 text-sm text-ink/55">{m.pages} pages · {m.packet}</p>
+            <h3 className="font-serif mt-1 text-xl break-words">{m.title}</h3>
+            <p className="mt-2 text-sm text-ink/55">{m.tldr.line}</p>
           </Link>
         ))}
       </div>
@@ -33,11 +32,13 @@ export function ListenIndex() {
 
 export function ListenPlayer() {
   const { id } = useParams()
+  return <ListenPlayerBody key={id ?? "missing"} id={id} />
+}
+
+function ListenPlayerBody({ id }: { id: string | undefined }) {
   const navigate = useNavigate()
   const meta = modules.find((m) => m.id === id)
-  const [doc, setDoc] = useState<ReadingDoc | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [skipAnswers, setSkipAnswers] = useState(true)
+  const blocks = useMemo(() => (meta ? moduleNotes(meta) : []), [meta])
   const [natural, setNatural] = useState(true)
   const [engine, setEngine] = useState<"human" | "mac">("mac")
   const [humanVoice, setHumanVoice] = useState<HumanVoiceId>("am_liam")
@@ -57,12 +58,11 @@ export function ListenPlayer() {
   const voicesRef = useRef(voices)
   const engineRef = useRef(engine)
   const humanVoiceRef = useRef(humanVoice)
-  const blocksRef = useRef<{ page: number; text: string }[]>([])
+  const blocksRef = useRef<NoteBlock[]>([])
   const timerRef = useRef<number | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const activeRef = useRef<HTMLDivElement | null>(null)
 
-  const blocks = useMemo(() => (doc ? flatten(doc, skipAnswers) : []), [doc, skipAnswers])
   blocksRef.current = blocks
   statusRef.current = status
   indexRef.current = index
@@ -79,22 +79,6 @@ export function ListenPlayer() {
     () => (blocks[index] ? (natural ? splitForCadence(blocks[index].text) : [forSpeech(blocks[index].text)]) : []),
     [blocks, index, natural],
   )
-
-  useEffect(() => {
-    setIndex((i) => (blocks.length ? Math.min(i, blocks.length - 1) : 0))
-  }, [blocks.length])
-
-  useEffect(() => {
-    if (!id) return
-    loadReading(id)
-      .then((d) => {
-        setDoc(d)
-        setIndex(0)
-        setSentence(0)
-        setStatus("idle")
-      })
-      .catch((e: Error) => setError(e.message))
-  }, [id])
 
   useEffect(() => {
     const loadVoices = () => {
@@ -172,7 +156,7 @@ export function ListenPlayer() {
 
     if (engineRef.current === "human" && isHumanReady()) {
       try {
-        setLoadNote("Reading with Liam…")
+        setLoadNote("Reading…")
         const spoken = lines[line]
         const el = await Promise.race([
           speakHuman(spoken, humanVoiceRef.current, rateRef.current),
@@ -188,10 +172,10 @@ export function ListenPlayer() {
         await el.play()
         return
       } catch (err) {
-        setLoadNote(`Human voice not ready (${err instanceof Error ? err.message : "error"}). Using Reed.`)
+        setLoadNote(`Human voice not ready (${err instanceof Error ? err.message : "error"}). Using the computer voice.`)
       }
     } else if (engineRef.current === "human") {
-      setLoadNote("Human voice is still loading. Reed is reading until it is ready.")
+      setLoadNote("Human voice is still loading. The computer voice is reading until it is ready.")
       void loadHumanVoice(setLoadNote).catch(() => undefined)
     }
     speakEnglish(start, line, lines)
@@ -215,6 +199,7 @@ export function ListenPlayer() {
   }
 
   function play() {
+    if (!blocks.length) return
     if (status === "paused") {
       if (audioRef.current) void audioRef.current.play()
       else window.speechSynthesis.resume()
@@ -222,8 +207,8 @@ export function ListenPlayer() {
       return
     }
     if (engine === "human" && !isHumanReady()) {
-      setLoadNote("Loading the human voice in the background. Reed is reading now.")
-      void loadHumanVoice(setLoadNote).catch(() => setLoadNote("Human voice failed to load. Staying on Reed."))
+      setLoadNote("Loading the human voice in the background. The computer voice is reading now.")
+      void loadHumanVoice(setLoadNote).catch(() => setLoadNote("Human voice failed to load. Staying on the computer voice."))
     }
     void speakAt(index, sentence)
   }
@@ -256,39 +241,36 @@ export function ListenPlayer() {
   }
 
   if (!meta) return <Page kicker="Listen" title="Module not found">Unknown module.</Page>
-  if (error) return <Page kicker="Listen" title={meta.title}>{error}</Page>
-  if (!doc) return <Page kicker="Listen" title={meta.title}>Loading packet…</Page>
 
   const current = blocks[index]
 
   return (
-    <Page kicker={`Module ${meta.number} · read aloud`} title={meta.title} source={meta.packet}>
-      <div className="sticky top-0 z-10 mb-6 rounded-xl border border-line bg-paper/95 p-4 backdrop-blur">
+    <Page kicker={`Module ${meta.number} · read aloud`} title={meta.title}>
+      <div className="sticky top-14 z-10 mb-6 rounded-xl border border-line bg-paper/95 p-4 backdrop-blur md:top-0">
         <div className="flex flex-wrap items-center gap-2">
           {status !== "playing" ? (
-            <button className="rounded-md bg-ink px-4 py-2 text-sm text-cream" onClick={() => void play()}>
+            <button type="button" className="rounded-md bg-ink px-4 py-2 text-sm text-cream" onClick={() => void play()}>
               {status === "paused" ? "Resume" : "Read aloud"}
             </button>
           ) : (
-            <button className="rounded-md bg-ink px-4 py-2 text-sm text-cream" onClick={pause}>
+            <button type="button" className="rounded-md bg-ink px-4 py-2 text-sm text-cream" onClick={pause}>
               Pause
             </button>
           )}
-          <button className="rounded-md border border-line px-3 py-2 text-sm" onClick={stop}>
+          <button type="button" className="rounded-md border border-line px-3 py-2 text-sm" onClick={stop}>
             Stop
           </button>
-          <button className="rounded-md border border-line px-3 py-2 text-sm" onClick={() => jump(index - 1)}>
+          <button type="button" className="rounded-md border border-line px-3 py-2 text-sm" onClick={() => jump(index - 1)}>
             Previous
           </button>
-          <button className="rounded-md border border-line px-3 py-2 text-sm" onClick={() => jump(index + 1)}>
+          <button type="button" className="rounded-md border border-line px-3 py-2 text-sm" onClick={() => jump(index + 1)}>
             Next
           </button>
-          <Link to="/listen" className="ml-auto text-sm text-gold-deep">
+          <Link to="/listen" className="text-sm text-gold-deep sm:ml-auto">
             All modules
           </Link>
         </div>
-        <p className="mt-3 text-sm font-medium text-ink">Language: English (United States) · male tenor</p>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <label className="text-xs text-ink/60">
             Voice engine
             <select
@@ -297,7 +279,7 @@ export function ListenPlayer() {
               onChange={(e) => setEngine(e.target.value as "human" | "mac")}
             >
               <option value="human">Human (neural)</option>
-              <option value="mac">Mac backup (Reed)</option>
+              <option value="mac">Computer voice</option>
             </select>
           </label>
           {engine === "human" ? (
@@ -317,7 +299,7 @@ export function ListenPlayer() {
             </label>
           ) : (
             <label className="text-xs text-ink/60">
-              Mac voice
+              Computer voice
               <select
                 className="mt-1 w-full rounded-md border border-line bg-white px-2 py-1.5 text-sm text-ink"
                 value={voiceURI}
@@ -344,21 +326,15 @@ export function ListenPlayer() {
             />
             <span className="text-ink">{rate.toFixed(2)}×</span>
           </label>
-          <div className="flex flex-col justify-end gap-2 pb-1 text-sm">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={natural} onChange={(e) => setNatural(e.target.checked)} />
-              Natural pauses
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={skipAnswers} onChange={(e) => setSkipAnswers(e.target.checked)} />
-              Skip answer keys
-            </label>
-          </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={natural} onChange={(e) => setNatural(e.target.checked)} />
+            Natural pauses
+          </label>
         </div>
         <p className="mt-2 text-xs text-ink/50">
           {loadNote ? `${loadNote} · ` : ""}
           Passage {blocks.length ? index + 1 : 0} of {blocks.length}
-          {current ? ` · packet page ${current.page}` : ""}
+          {current ? ` · ${current.heading}` : ""}
           {sentences.length ? ` · sentence ${Math.min(sentence + 1, sentences.length)} of ${sentences.length}` : ""}
           · about {minutes(words)} min
         </p>
@@ -367,6 +343,7 @@ export function ListenPlayer() {
       <div className="mb-4 flex flex-wrap gap-2">
         {modules.map((m) => (
           <button
+            type="button"
             key={m.id}
             onClick={() => {
               stop()
@@ -382,14 +359,14 @@ export function ListenPlayer() {
       <div className="space-y-4">
         {blocks.map((b, i) => (
           <div
-            key={`${b.page}-${i}`}
+            key={`${b.heading}-${i}`}
             ref={i === index ? activeRef : undefined}
             onClick={() => jump(i)}
-            className={`cursor-pointer rounded-xl border px-5 py-4 text-[17px] leading-relaxed ${
+            className={`cursor-pointer rounded-xl border px-4 py-4 text-base leading-relaxed sm:px-5 sm:text-[17px] ${
               i === index ? "border-gold bg-gold/15" : "border-transparent text-ink/80 hover:bg-paper"
             }`}
           >
-            <p className="mb-1 text-[11px] tracking-wide text-ink/40 uppercase">Page {b.page}</p>
+            <p className="mb-1 text-[11px] tracking-wide text-ink/40 uppercase">{b.heading}</p>
             {i === index && natural
               ? sentences.map((s, si) => (
                   <span key={si} className={si === sentence ? "rounded bg-gold/30" : undefined}>

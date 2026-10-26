@@ -1,8 +1,13 @@
 import { useMemo, useState } from "react"
 import { money } from "../lib/format"
-import { Page, Sheet, SheetRow, Stat } from "../components/ui"
+import { Page, ResetExample, Sheet, SheetRow, Stat } from "../components/ui"
 
 export function Acsw() {
+  const [epoch, setEpoch] = useState(0)
+  return <AcswBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function AcswBody({ onReset }: { onReset: () => void }) {
   const [sale, setSale] = useState(3100000)
   const [costPct, setCostPct] = useState(4)
   const [basis, setBasis] = useState(2550000)
@@ -33,7 +38,8 @@ export function Acsw() {
   }, [sale, costPct, basis, additions, cr, loanBal, reserves, ordRate, recapRate, cgRate, loanFeesLeft])
 
   return (
-    <Page kicker="Imported form" title="Alternative Cash Sale Worksheet" source="CCIM_ACSW_eForm.pdf — gold rows total the lines in the hint">
+    <Page kicker="Sale" title="Sale proceeds" source="Basis, gain, and cash before and after tax.">
+      <ResetExample onClick={onReset} />
       <p className="mb-6 text-sm text-ink/65">
         Amount realized is price minus cost of sale. Adjusted basis is original basis plus additions
         minus cost recovery. Sale proceeds before tax take the loan off and add reserves back. After-tax

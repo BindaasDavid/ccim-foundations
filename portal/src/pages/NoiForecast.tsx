@@ -4,12 +4,12 @@ import { money } from "../lib/format"
 import {
   buildNoiForecast,
   NOI_YEARS,
-  parkPlazaDrivers,
-  parkPlazaTenants,
+  exampleDrivers,
+  exampleTenants,
   type NoiDrivers,
   type TenantRow,
 } from "../lib/noiForecast"
-import { Page } from "../components/ui"
+import { Page, ResetExample } from "../components/ui"
 import { Workbook, XlInput } from "../components/workbook"
 
 function Cell({
@@ -17,11 +17,13 @@ function Cell({
   onChange,
   kind = "calc",
   bold = false,
+  label,
 }: {
   value: number
   onChange?: (n: number) => void
   kind?: "input" | "calc" | "total"
   bold?: boolean
+  label?: string
 }) {
   const tone =
     kind === "input"
@@ -35,6 +37,7 @@ function Cell({
         <input
           type="number"
           step="any"
+          aria-label={label ?? "Amount"}
           className="w-full bg-transparent px-1 py-0.5 text-right outline-none"
           value={value === 0 ? "" : value}
           onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
@@ -96,7 +99,7 @@ export function NoiForecastGrid({
         ).map(([label, value, onChange]) => (
           <label key={label} className="block text-xs">
             <span className="mb-1 block text-[#595959]">{label}</span>
-            <XlInput value={value} onChange={onChange} />
+            <XlInput embedLabel={false} value={value} onChange={onChange} />
           </label>
         ))}
       </div>
@@ -120,6 +123,7 @@ export function NoiForecastGrid({
               <tr key={t.name}>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">
                   <input
+                    aria-label={`Tenant ${ti + 1} name`}
                     className="w-full bg-transparent outline-none"
                     value={t.name}
                     onChange={(e) =>
@@ -128,7 +132,7 @@ export function NoiForecastGrid({
                   />
                 </td>
                 {t.rents.map((rent, yi) => (
-                  <Cell key={yi} value={rent} kind="input" onChange={(n) => setRent(ti, yi, n)} />
+                  <Cell key={yi} label={`${t.name} year ${yi + 1} rent`} value={rent} kind="input" onChange={(n) => setRent(ti, yi, n)} />
                 ))}
               </tr>
             ))}
@@ -215,23 +219,29 @@ export function NoiForecastGrid({
 }
 
 export function NoiForecast() {
-  const [tenants, setTenants] = useState<TenantRow[]>(() => parkPlazaTenants.map((t) => ({ ...t, rents: [...t.rents] })))
-  const [drivers, setDrivers] = useState<NoiDrivers>({ ...parkPlazaDrivers })
+  const [epoch, setEpoch] = useState(0)
+  return <NoiForecastBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function NoiForecastBody({ onReset }: { onReset: () => void }) {
+  const [tenants, setTenants] = useState<TenantRow[]>(() => exampleTenants.map((t) => ({ ...t, rents: [...t.rents] })))
+  const [drivers, setDrivers] = useState<NoiDrivers>({ ...exampleDrivers })
   const years = useMemo(() => buildNoiForecast(tenants, drivers), [tenants, drivers])
 
   return (
     <Page
-      kicker="Module 10 · Task 6"
+      kicker="Operations"
       title="Forecasting NOI"
-      source="Interactive recreation of the six-year NOI worksheet (packet page 10.42)"
+      source="Six years of rent, vacancy, and operating expenses."
     >
+      <ResetExample onClick={onReset} />
       <p className="mb-6 text-sm text-ink/65">
-        Edit any tenant-year rent or the percent drivers. Totals follow the printed stack: PRI, vacancy,
-        GOI, then management, admin, and the $1.74 stop, then NOI.
+        Edit any tenant-year rent or the percent drivers. Totals run from potential rent through vacancy,
+        gross income, management, admin, and other operating expenses, then NOI.
       </p>
       <Workbook
-        title="Task 6: Forecasting NOI"
-        version="Study recreation · page 10.42"
+        title="NOI forecast"
+        version="Study worksheet"
         tabs={[{ id: "noi", label: "NOI worksheet" }]}
         active="noi"
         onTab={() => undefined}
@@ -239,9 +249,9 @@ export function NoiForecast() {
         <NoiForecastGrid tenants={tenants} setTenants={setTenants} drivers={drivers} setDrivers={setDrivers} />
       </Workbook>
       <p className="mt-4 text-sm text-ink/60">
-        Year-6 NOI on this sheet is {money(years[5]?.noi ?? 0, 0)}. Carry it to{" "}
+        Year-6 NOI on this sheet is {money(years[5]?.noi ?? 0, 0)}. Carry it to the NOI row on the{" "}
         <Link className="text-gold-deep" to="/tools/cfaw">
-          CFAW line 7
+          multi-year cash flow sheet
         </Link>
         .
       </p>

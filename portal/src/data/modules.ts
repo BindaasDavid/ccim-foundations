@@ -2,9 +2,7 @@ export type CourseModule = {
   id: string
   number: number
   title: string
-  packet: string
-  pages: number
-  tldr: { line: string; bullets: string[]; answers?: { task: string; items: string[] }[] }
+  tldr: { line: string; bullets: string[]; }
   outcomes: string[]
   agenda: string[]
   activities: string[]
@@ -19,8 +17,6 @@ export const modules: CourseModule[] = [
     id: "1",
     number: 1,
     title: "Overview of Commercial Real Estate",
-    packet: "FOUND_M1_Overview_2025-07-14.pdf",
-    pages: 20,
     tldr: {
       line: "CRE is two clients and two markets. Users buy space. Investors buy cash flow. The space market sets rent and vacancy; the capital market sets the return they will accept.",
       bullets: [
@@ -43,7 +39,7 @@ export const modules: CourseModule[] = [
       "Office, industrial, retail, multifamily, specialty",
       "Business opportunities and follow-up services",
     ],
-    activities: ["Activity 1-1: Self-assessment review"],
+    activities: ["Self-check: product types and who you can serve"],
     focus: [
       "Users buy occupancy; investors buy cash flow and residual value.",
       "The space market sets rent and vacancy; the capital market sets required return.",
@@ -56,8 +52,6 @@ export const modules: CourseModule[] = [
     id: "2",
     number: 2,
     title: "Markets, Trade Areas, Demographics, Knowledge, and Skills",
-    packet: "FOUND_M2_Markets_Trade_Areas_Demos_KS_2025-07-14.pdf",
-    pages: 18,
     tldr: {
       line: "Pick a geography small enough to know and large enough to eat. Demographics show the trend. A trade area plus a skill stack is the business model.",
       bullets: [
@@ -80,7 +74,7 @@ export const modules: CourseModule[] = [
       "Trade-area analysis and market surveys",
       "Knowledge, skills, resources, and a strategic model",
     ],
-    activities: ["Activity 2-1: Self-assessment review"],
+    activities: ["Self-check: trade area, skills, and a territory that can feed a goal"],
     focus: [
       "Trade area first, metro second.",
       "A territory has to contain enough users and inventory to feed a goal.",
@@ -96,8 +90,6 @@ export const modules: CourseModule[] = [
     id: "3",
     number: 3,
     title: "Time Value of Money Concepts",
-    packet: "FOUND_M3_TVM_2025-07-14.pdf",
-    pages: 40,
     tldr: {
       line: "Money has a time stamp. Compounding grows a present amount; discounting brings a future amount back. One family of keys: N, I/YR, PV, PMT, FV.",
       bullets: [
@@ -116,9 +108,9 @@ export const modules: CourseModule[] = [
       "Cash flows and investor preferences",
       "Compounding",
       "Discounting",
-      "Activity 3-1 drill set",
+      "Compounding and discounting drills",
     ],
-    activities: ["Activity 3-1: Compounding and discounting", "Activity 3-2: Self-assessment review"],
+    activities: ["Drill compounding and discounting on one T-bar", "Self-check: N, I/YR, PV, PMT, and FV"],
     focus: [
       "A T-bar is just a timeline of signed cash flows.",
       "Smaller equity in and larger/earlier cash out is preferred, all else equal.",
@@ -131,8 +123,6 @@ export const modules: CourseModule[] = [
     id: "4",
     number: 4,
     title: "The Leasing Market",
-    packet: "FOUND_M4_Leasing_Market_2025-07-14.pdf",
-    pages: 12,
     tldr: {
       line: "Vacancy is empty space as a percent of stock. Absorption is the change in occupied space. Cycle position tells you how hard to push rent.",
       bullets: [
@@ -152,7 +142,7 @@ export const modules: CourseModule[] = [
       "Vacancy rate math",
       "Absorption math and supply/demand forecasts",
     ],
-    activities: ["Activity 4-1: Self-assessment review"],
+    activities: ["Self-check: vacancy, absorption, and where the cycle is"],
     focus: [
       "Vacancy = vacant SF ÷ total SF (or lost rent ÷ PRI).",
       "Absorption is the net change in occupied space over the period.",
@@ -168,8 +158,6 @@ export const modules: CourseModule[] = [
     id: "5",
     number: 5,
     title: "Leases and Lease Clauses",
-    packet: "FOUND_M5_Lease_Clauses_2025-07-14.pdf",
-    pages: 20,
     tldr: {
       line: "The lease is the cash-flow contract. Face rent is not what either party economically pays after stops, CAM, TIs, and free rent.",
       bullets: [
@@ -190,7 +178,7 @@ export const modules: CourseModule[] = [
       "Rent terminology and options",
       "Effective rent / lease-cost analysis",
     ],
-    activities: ["Activity 5-1: Self-assessment review"],
+    activities: ["Self-check: lease types, stops, and effective rent"],
     focus: [
       "Face rent is not what the tenant economically pays.",
       "An expense stop caps the owner’s opex; the rest is a tenant pass-through.",
@@ -206,8 +194,6 @@ export const modules: CourseModule[] = [
     id: "6",
     number: 6,
     title: "Business Development",
-    packet: "FOUND_M06_Business_Development_2025-07-14.pdf",
-    pages: 34,
     tldr: {
       line: "Territory, prospecting math, then qualify. Weekly contacts are a derived number from the income goal, not a mood.",
       bullets: [
@@ -228,7 +214,7 @@ export const modules: CourseModule[] = [
       "Prospecting, qualifying, the meeting",
       "Property marketing, listing control, negotiation",
     ],
-    activities: ["Activity 6-1: Self-assessment review"],
+    activities: ["Self-check: territory, prospecting math, and negotiation"],
     focus: [
       "Inventory, users, competitors, and lease-vs-sale mix decide the territory.",
       "Weekly contacts are a derived number, not a mood.",
@@ -244,8 +230,6 @@ export const modules: CourseModule[] = [
     id: "7",
     number: 7,
     title: "Investment Analysis Tools",
-    packet: "FOUND_M07_Investment_Analysis_Tools_2025-07-14.pdf",
-    pages: 20,
     tldr: {
       line: "PRI → vacancy → GOI → opex → NOI → debt service → CFBT. Value ≈ NOI ÷ cap rate. The T-bar is the IRR input tape.",
       bullets: [
@@ -266,7 +250,7 @@ export const modules: CourseModule[] = [
       "Annual debt service and CFBT",
       "The cash-flow model / T-bar",
     ],
-    activities: ["Activity 7-1: Self-assessment review"],
+    activities: ["Self-check: PRI through CFBT, cap rate, and the T-bar"],
     focus: [
       "NOI is before debt and tax.",
       "Value = NOI ÷ cap rate when the rate is market-supported.",
@@ -283,8 +267,6 @@ export const modules: CourseModule[] = [
     id: "8",
     number: 8,
     title: "Using the Internal Rate of Return",
-    packet: "FOUND_M08_Using_IRR_2025-07-14.pdf",
-    pages: 22,
     tldr: {
       line: "IRR is the discount rate that makes NPV of the cash-flow series equal zero. Beat the hurdle, or walk.",
       bullets: [
@@ -301,9 +283,9 @@ export const modules: CourseModule[] = [
     agenda: [
       "IRR on real estate investments",
       "Uneven cash-flow series",
-      "Activity 8-1 calculation set",
+      "IRR on an uneven cash-flow series",
     ],
-    activities: ["Activity 8-1: Calculating IRR", "Activity 8-2: Self-assessment review"],
+    activities: ["Solve IRR on uneven cash flows plus a sale", "Self-check: IRR versus a required rate"],
     focus: [
       "Enter CF0 as a negative equity outlay.",
       "Put sale proceeds in the exit year, not in a phantom extra year unless that is the story.",
@@ -319,8 +301,6 @@ export const modules: CourseModule[] = [
     id: "9",
     number: 9,
     title: "Mortgage Loans",
-    packet: "FOUND_M09_Mortgage_Loans_2025-07-14.pdf",
-    pages: 32,
     tldr: {
       line: "A fully amortizing loan is an annuity. Payment splits into interest on the remaining balance and principal. A short term leaves a balloon.",
       bullets: [
@@ -337,9 +317,9 @@ export const modules: CourseModule[] = [
     agenda: [
       "Borrower vs lender view",
       "Amortization and remaining balance",
-      "Activity 9-1 mortgage drill",
+      "Mortgage payment, balance, and balloon",
     ],
-    activities: ["Activity 9-1: Mortgage loans", "Activity 9-2: Self-assessment review"],
+    activities: ["Build an amortizing loan and read a remaining balance", "Self-check: payment, interest, and balloon"],
     focus: [
       "Payment solves PV = loan amount at the contract rate.",
       "Balance after k periods is the PV of the remaining payments.",
@@ -354,92 +334,17 @@ export const modules: CourseModule[] = [
   {
     id: "10",
     number: 10,
-    title: "Case Study: Office Building",
-    packet: "FOUND_M10_Case_Study_2025-07-23.pdf",
-    pages: 48,
+    title: "Office building case walkthrough",
     tldr: {
-      line: "Fill the vacant medical suite with the clean lease, not the concession-heavy one. Stabilized NOI is $73,464. Cap that at 7% and the ask is $1,050,000. Hold five years, sell off year-6 NOI, and before-tax IRR is 11.27%.",
+      line: "Walk one office from the people who use the space through lease cash, operations, debt, and sale. The IRR is the last number, because it needs every earlier step.",
       bullets: [
-        "Recommend Prospect C / Tenant C. Year-1 owner cash is $20,520 ($10.26 psf). Prospect A is a year-1 loss after TIs and free rent.",
-        "Buyer equity is $262,500 on a $787,500 loan. ADS is $63,807. Sale at $1,145,000. IRR 11.27%.",
-      ],
-      answers: [
-        {
-          task: "Task 1 — Market analysis",
-          items: [
-            "1. Characterize the city’s population: growing city of 50,000 in a 225,000 county (5-year city 60,000 / county 270,000); median age 37; families plus a large retiree share; transit-oriented and walkable.",
-            "Workforce — a. White collar or blue collar? Majority white collar (60% / 40% blue collar). Professionally employed people who need office space.",
-            "Workforce — b. Stage in their working lives? Peak-earning / baby-boomer years (30–59 is 42% of the population).",
-            "Workforce — c. Effect on office demand? Strong demand for medical and personal services, professional office, and government-support space.",
-            "Lifestyle — d. Who is drawn to this city? People who want parks, walkability, transit, schools, and hospital access.",
-            "Lifestyle — e. Benefits of living here? Economic stability (government 35%), a medical base, and retiree demand.",
-            "Lifestyle — f. Families, singles, retirees, or other? Baby-boomer families plus a large retirement population.",
-            "g. Four+ representative sectors: (1) families (2) white-collar workers (3) government employees (4) retirees. Also school-age children, singles, and a growing international community.",
-            "h. Retail/office that stay strong (four+): (1) medical office (2) children’s retail (3) professional/service office (4) tutoring (5) sporting goods.",
-            "i. Medical uses for the vacant suite (four+): (1) obstetrics (2) dentistry / orthodontia (3) cardiology (4) sports medicine / chiropractic (5) oncology / gerontology.",
-          ],
-        },
-        {
-          task: "Task 2 — Operating expense stop",
-          items: [
-            "1. Effect on Tenant A this year (2,200 sf at $11 psf): annual rent $11.00 psf = $24,200. Additional payment from the $1.54 stop ($0.20 psf CAM) = $440. Total tenant responsibilities = $11.20 psf / $24,640.",
-            "2. New effective annual rate = $24,640 ÷ 2,200 sf = $11.20 psf.",
-          ],
-        },
-        {
-          task: "Task 3 — Vacancy and absorption",
-          items: [
-            "1. Submarket vacancy = 9,250 ÷ 30,500 = 0.30, or 30%.",
-            "2. Vacancy by building: Park Plaza 2,000 ÷ 10,000 = 20%; Comparable A 3,000 ÷ 12,000 = 25%; Comparable B 4,250 ÷ 8,500 = 50%.",
-            "3. Occupied space in the three-building submarket = 30,500 − 9,250 = 21,250 sf.",
-            "4. GOI at a 30% vacancy: Park Plaza $120,000 − $36,000 = $84,000; Comparable A $132,000 − $39,600 = $92,400; Comparable B $87,125 − $26,138 = $60,987.",
-            "5. Absorption = EOY occupied 26,375 − BOY occupied 21,250 = 5,125 sf.",
-          ],
-        },
-        {
-          task: "Task 4 — Concessions and effective rent",
-          items: [
-            "1. Prospect A, year-1 owner cash: base rent $27,000; owner opex to the $1.74 stop $3,480; concessions and allowances $39,750; total = ($16,230).",
-            "2. Prospect A annual effective rate, year 1 = ($16,230) ÷ 2,000 sf = ($8.12) psf.",
-            "3. Prospect C, year-1 owner cash: base rent $24,000; owner opex to the stop $3,480; concessions $0; total = $20,520.",
-            "4. Prospect C annual effective rate, year 1 = $20,520 ÷ 2,000 sf = $10.26 psf.",
-            "Recommendation: take Prospect C / Tenant C. The owner’s first job is to fill the vacancy, and C is the only year-1 cash-positive lease.",
-          ],
-        },
-        {
-          task: "Task 5 — APOD and value",
-          items: [
-            "1. APOD lines (nearest dollar): Line 2 Vacancy & credit losses $7,434; Line 3 Effective rental income $98,766; Line 5 GOI $98,766; Line 10 Off-site management $6,914; Line 29 Total operating expenses $25,302; Line 30 NOI $73,464; Line 35 CFBT $25,464 (after $48,000 ADS).",
-            "Line 29 is the sum of owner-paid opex on 10,000 sf: Line 7 Real estate taxes $10,000 ($1.00 psf); Line 9 Property insurance $3,000 ($0.30); Line 10 Off-site management $6,914 (7% of GOI); Line 14 Repairs and maintenance $2,000 ($0.20 exterior/CAM); Line 15 Common-area electric $600 ($0.06); Line 16 Water and sewer $600 ($0.06); Lines 19–21 Accounting/legal/permits/advertising $988 (combined; owner-paid, not in the stop); Line 24 Landscaping $1,200 ($0.12). Lines 8 and 11–13 are $0 (payroll sits inside the management fee). Check: $17,400 stop ($1.74 × 10,000) + $6,914 + $988 = $25,302.",
-            "2. Ask price = $73,464 ÷ 0.07 = $1,049,485, rounded to $1,050,000.",
-          ],
-        },
-        {
-          task: "Task 6 — Six-year NOI",
-          items: [
-            "1. NOI worksheet: Y1 $73,464; Y2 $73,464; Y3 $75,946; Y4 $78,008; Y5 $78,008; Y6 $80,173. PRI by year: $106,200 / $106,200 / $109,100 / $111,510 / $111,510 / $114,041.",
-            "2. Enter those NOI figures on CFAW line 7 and line 17. Year-6 NOI on the form is $80,173.",
-          ],
-        },
-        {
-          task: "Task 7 — Mortgage loans",
-          items: [
-            "1. Monthly mortgage payment = $5,317.26 (PV $787,500, I/YR 6.5%, 12 P/YR, N = 25 × 12).",
-            "2. Amortize the five-year hold (Tab 6 / annual summary). ADS = $63,807.",
-            "3. Remaining loan balance at EOY 5 ≈ $713,177.",
-            "4. Mortgage Data box: periodic payment $5,317.26; annual debt service $63,807.",
-            "5. CFAW line 18 (ADS, not interest only) = $63,807 each year.",
-            "6. CFAW line 22 CFBT: Y1 $9,657; Y2 $9,657; Y3 $12,139; Y4 $14,201; Y5 $14,201.",
-          ],
-        },
-        {
-          task: "Task 8 — Before-tax IRR",
-          items: [
-            "1. Selling price = year-6 NOI $80,173 ÷ 0.07 = $1,145,328, rounded to $1,145,000.",
-            "2. ACSW lines 17–22: sale $1,145,000 − cost of sale 5% ($57,250) − EOY-5 mortgage ≈ $713,177 = sale proceeds before tax ≈ $374,573.",
-            "3. T-bar: t = 0 (−$262,500); Y1 $9,657; Y2 $9,657; Y3 $12,139; Y4 $14,201; Y5 $14,201 + $374,573. Before-tax IRR = 11.27%.",
-          ],
-        },
+        "Describe demand before you calculate. Who occupies this kind of suite, and what would fill a vacancy?",
+        "Compare leases on the owner’s year-1 cash after the expense stop, free rent, and tenant improvements. Face rent alone misleads.",
+        "Vacancy is empty area divided by stock. Absorption is the change in occupied area.",
+        "Stabilized NOI is potential rent minus a market vacancy allowance and operating expenses. Debt is not an operating expense.",
+        "A value indication is NOI divided by a cap rate you can support from the market.",
+        "A sale price often uses the income a buyer would see after your hold, not only the last year you operate.",
+        "Before-tax IRR needs equity out at closing, annual cash flow, and sale proceeds on the exit year. Cash out is negative.",
       ],
     },
     outcomes: [
@@ -467,11 +372,11 @@ export const modules: CourseModule[] = [
       "Task 8: Before-tax IRR",
     ],
     focus: [
-      "The case is one office walked through every tool in the course.",
+      "The walkthrough is one office taken through every tool in these notes.",
       "Do not skip Task 3–4; they feed the APOD vacancy and the lease-up story.",
       "IRR is the last step because it needs operations, loan, and sale together.",
     ],
-    practice: "Open the case lab and run Tasks 1–8 in order. Type the packet’s given figures. Confirm IRR only after sale proceeds sit on year 5.",
+    practice: "Open the case lab and move from market notes through lease cash, operations, the loan, and sale. Confirm IRR only after sale proceeds sit on the exit year.",
     walk: [
       {
         title: "Phase I — property and market",
@@ -503,7 +408,7 @@ export const modules: CourseModule[] = [
         points: [
           "PRI is the rent roll at 100% occupancy. Vacancy is a market allowance even when the building is full.",
           "Management is usually a percent of GOI. Add owner-paid opex. NOI is before debt.",
-          "Asking price = NOI ÷ cap rate. Round the way the packet tells you.",
+          "Asking price = NOI ÷ cap rate. Round to a price a buyer would actually negotiate.",
         ],
       },
       {

@@ -1,14 +1,20 @@
-# Foundations Portal
+# CRE study notes
 
-Interactive study workspace for the CCIM Foundations support materials.
+Personal study workspace for commercial real estate fundamentals. It holds original module notes, a listen mode that reads those notes aloud, and calculators for time value of money, operations, and cash flow.
 
 ```bash
 cd portal
 npm install
-python3 scripts/extract-readings.py
 npm run dev
 ```
 
-**Listen** reads modules 1–10 aloud from the Support Materials packets (personal study copy). Voices come from the operating system.
+The GitHub Pages build uses base path `/ccim-foundations/` (see `.github/workflows/pages.yml`).
 
-Official course PDFs and Excel files stay in `../Support Materials`. This app implements original study notes and independent calculators that follow the same analysis lines as the APOD, CFAW, ACSW, DCF, and financial-calculator workbooks.
+```bash
+VITE_BASE=/ccim-foundations/ npm run build
+npm run preview
+```
+
+`scripts/extract-readings.py` is a local-only helper. Its output stays in a gitignored folder and is not read by the site, committed, or deployed.
+
+Personal study notes. Not affiliated with or endorsed by the CCIM Institute.

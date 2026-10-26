@@ -13,14 +13,16 @@ export function Glossary() {
     <Page
       kicker="Reference"
       title="Study glossary"
-      source="Terms selected from the course stack. Official wording is in CCIM_Glossary_2023-02_(2).pdf."
+      source="Short definitions used in these notes."
     >
-      <input
-        className="mb-6 w-full max-w-md rounded-md border border-line bg-white px-3 py-2 text-sm"
-        placeholder="Search terms"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-      />
+      <label className="mb-6 block max-w-md text-sm">
+        <span className="mb-1 block text-xs font-medium text-ink/70">Search terms</span>
+        <input
+          className="w-full rounded-md border border-line bg-white px-3 py-2 text-sm"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+      </label>
       <div className="space-y-3">
         {rows.map((g) => (
           <div key={g.term} className="rounded-xl border border-line bg-paper px-5 py-4">

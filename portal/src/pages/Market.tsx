@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { money, pct } from "../lib/format"
-import { Card, Field, Page, Stat } from "../components/ui"
+import { Card, Field, Page, ResetExample, Stat } from "../components/ui"
 
 type Bldg = { name: string; sf: number; vacant: number; rentPsf: number }
 
@@ -11,6 +11,11 @@ const starter: Bldg[] = [
 ]
 
 export function Market() {
+  const [epoch, setEpoch] = useState(0)
+  return <MarketBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function MarketBody({ onReset }: { onReset: () => void }) {
   const [rows, setRows] = useState(starter)
   const [absorbed, setAbsorbed] = useState(2000)
   const [newSupply, setNewSupply] = useState(0)
@@ -34,9 +39,11 @@ export function Market() {
   }
 
   return (
-    <Page kicker="Module 4 / Task 3" title="Vacancy and absorption" source="FOUND_M4_Leasing_Market and FOUND_M10 Task 3">
+    <Page kicker="Leasing market" title="Vacancy and absorption" source="Empty space over stock, and the change in occupied space.">
+      <ResetExample onClick={onReset} />
       <Card>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[36rem] text-sm">
           <thead>
             <tr className="text-left text-ink/50">
               <th className="pb-2">Building</th>
@@ -50,23 +57,24 @@ export function Market() {
             {rows.map((r, i) => (
               <tr key={i} className="border-t border-line">
                 <td className="py-2 pr-2">
-                  <input className="w-full rounded border border-line px-2 py-1" value={r.name} onChange={(e) => patch(i, { name: e.target.value })} />
+                  <input aria-label={`Building ${i + 1} name`} className="w-full rounded border border-line px-2 py-1" value={r.name} onChange={(e) => patch(i, { name: e.target.value })} />
                 </td>
                 <td className="py-2 pr-2">
-                  <input type="number" className="w-28 rounded border border-line px-2 py-1" value={r.sf || ""} onChange={(e) => patch(i, { sf: Number(e.target.value) })} />
+                  <input aria-label={`Building ${i + 1} total square feet`} type="number" className="w-full min-w-0 rounded border border-line px-2 py-1" value={r.sf || ""} onChange={(e) => patch(i, { sf: Number(e.target.value) })} />
                 </td>
                 <td className="py-2 pr-2">
-                  <input type="number" className="w-28 rounded border border-line px-2 py-1" value={r.vacant || ""} onChange={(e) => patch(i, { vacant: Number(e.target.value) })} />
+                  <input aria-label={`Building ${i + 1} vacant square feet`} type="number" className="w-full min-w-0 rounded border border-line px-2 py-1" value={r.vacant || ""} onChange={(e) => patch(i, { vacant: Number(e.target.value) })} />
                 </td>
                 <td className="py-2 pr-2">
-                  <input type="number" className="w-24 rounded border border-line px-2 py-1" value={r.rentPsf || ""} onChange={(e) => patch(i, { rentPsf: Number(e.target.value) })} />
+                  <input aria-label={`Building ${i + 1} rent per square foot`} type="number" className="w-full min-w-0 rounded border border-line px-2 py-1" value={r.rentPsf || ""} onChange={(e) => patch(i, { rentPsf: Number(e.target.value) })} />
                 </td>
                 <td className="py-2 text-right">{r.sf ? pct(r.vacant / r.sf, 1) : "—"}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button className="mt-3 text-sm text-gold-deep" onClick={() => setRows([...rows, { name: "Building", sf: 0, vacant: 0, rentPsf: 0 }])}>
+        </div>
+        <button type="button" className="mt-3 text-sm text-gold-deep" onClick={() => setRows([...rows, { name: "Building", sf: 0, vacant: 0, rentPsf: 0 }])}>
           Add building
         </button>
       </Card>

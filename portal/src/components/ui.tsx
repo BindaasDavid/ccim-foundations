@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { useId, type ReactNode } from "react"
 
 export function Page({
   kicker,
@@ -12,9 +12,9 @@ export function Page({
   children: ReactNode
 }) {
   return (
-    <div className="mx-auto max-w-6xl px-8 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 md:px-8 md:py-10">
       <p className="text-[11px] tracking-[0.2em] text-gold-deep uppercase">{kicker}</p>
-      <h2 className="font-serif mt-2 text-3xl text-ink">{title}</h2>
+      <h2 className="font-serif mt-2 text-2xl break-words text-ink sm:text-3xl">{title}</h2>
       {source && <p className="mt-2 max-w-3xl text-sm text-ink/60">Based on: {source}</p>}
       <div className="mt-8">{children}</div>
     </div>
@@ -84,7 +84,7 @@ export function Stat({ label, value, accent = false }: { label: string; value: s
   return (
     <div className={`rounded-lg border px-4 py-3 ${accent ? "border-gold bg-gold/10" : "border-line bg-white"}`}>
       <p className="text-[11px] tracking-wide text-ink/55 uppercase">{label}</p>
-      <p className="font-serif mt-1 text-xl text-ink">{value}</p>
+      <p className={`font-serif mt-1 break-words text-ink ${value.length > 28 ? "text-sm leading-snug" : "text-xl"}`}>{value}</p>
     </div>
   )
 }
@@ -112,21 +112,32 @@ export function SheetRow({
   hint?: string
   format?: "number" | "money" | "pct"
 }) {
+  const id = useId()
   const tone =
     kind === "total" ? "bg-gold/15 font-medium" : kind === "computed" ? "bg-cream/80 text-ink/80" : "bg-white"
   return (
     <tr className={`border-t border-line ${tone}`}>
       <td className="w-12 px-3 py-1.5 align-middle text-xs text-ink/50">{n}</td>
       <td className="px-3 py-1.5 align-middle">
-        {label}
-        {hint ? <span className="ml-2 text-xs text-ink/40">{hint}</span> : null}
+        {kind === "input" && onChange ? (
+          <label htmlFor={id}>
+            {label}
+            {hint ? <span className="ml-2 text-xs text-ink/40">{hint}</span> : null}
+          </label>
+        ) : (
+          <>
+            {label}
+            {hint ? <span className="ml-2 text-xs text-ink/40">{hint}</span> : null}
+          </>
+        )}
       </td>
-      <td className="w-44 px-3 py-1.5 align-middle text-right">
+      <td className="w-36 px-3 py-1.5 align-middle text-right sm:w-44">
         {kind === "input" && onChange ? (
           <input
+            id={id}
             type="number"
             step="any"
-            className="w-full rounded-md border border-line bg-white px-2 py-1 text-right text-sm outline-none focus:border-gold"
+            className="w-full min-w-0 rounded-md border border-line bg-white px-2 py-1 text-right text-sm outline-none focus:border-gold"
             value={value === 0 ? "" : value}
             onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
           />
@@ -174,17 +185,22 @@ export function Sheet({
   )
 }
 
-export function AnswerKey({ title, items }: { title: string; items: string[] }) {
+export function ResetExample({ onClick }: { onClick: () => void }) {
   return (
-    <div className="mt-4 rounded-lg border-2 border-gold bg-gold/15 p-4">
-      <p className="text-xs font-semibold tracking-[0.16em] text-gold-deep uppercase">Published answer · {title}</p>
-      <ol className="mt-2 space-y-2 text-sm text-ink">
-        {items.map((item) => (
-          <li key={item} className="leading-relaxed">
-            {item}
-          </li>
-        ))}
-      </ol>
-    </div>
+    <button
+      type="button"
+      onClick={onClick}
+      className="mb-4 rounded-md border border-line bg-paper px-3 py-2 text-sm hover:border-gold"
+    >
+      Reset to example
+    </button>
+  )
+}
+
+export function SignNote() {
+  return (
+    <p className="mb-3 max-w-2xl text-sm text-ink/70">
+      Sign convention: cash out is negative. Cash in is positive.
+    </p>
   )
 }

@@ -71,7 +71,7 @@ export function Quiz() {
   if (!q) return <Page kicker="Practice" title="Mock test">Missing question.</Page>
 
   return (
-    <Page kicker="Practice exam" title="100-question mock test" source="Original study items covering Modules 1–10 and the APOD / CFAW / ACSW stack">
+    <Page kicker="Practice exam" title="100-question mock test" source="Original study items covering the ten modules and the workshops.">
       <p className="mb-6 text-sm text-ink/65">
         Pick an answer, then submit that question. You will see whether you were right and why.
         Progress is saved in this browser.

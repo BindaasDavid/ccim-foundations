@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react"
+import { useId, useMemo, useState } from "react"
 import { amortize, fv, irr, mean, median, nper, npv, pmt, pv, rate, stdev } from "../lib/finance"
-import { money, num, pct } from "../lib/format"
-import { Page } from "../components/ui"
+import { irrText, money, num, pct } from "../lib/format"
+import { Page, ResetExample, SignNote } from "../components/ui"
 import { Workbook, XlGrid, XlHead, XlInput, XlOut, XlRow, XlSection, XlTd } from "../components/workbook"
 
 export type CalcTab =
@@ -68,6 +68,7 @@ function TvmBlock({
   set: (patch: Partial<TvmState>) => void
   title?: string
 }) {
+  const solveId = useId()
   const r = solveTvm(s)
   const show = (key: Solve, raw: number) => (s.solve === key ? r.solved : raw)
   const fmtMoney = (key: Solve, raw: number) => money(show(key, raw), 2)
@@ -117,7 +118,12 @@ function TvmBlock({
       </XlRow>
       <XlRow label="Select Calculation">
         <XlTd>
+          <label htmlFor={solveId} className="sr-only">
+            Select calculation
+          </label>
           <select
+            id={solveId}
+            aria-label="Select calculation"
             className="w-full border border-[#bf8f00] bg-[#fff2cc] px-2 py-1"
             value={s.solve}
             onChange={(e) => set({ solve: e.target.value as Solve })}
@@ -146,6 +152,11 @@ const defaultTvm = (): TvmState => ({
 })
 
 export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
+  const [epoch, setEpoch] = useState(0)
+  return <CalculatorBody key={epoch} tab={tab} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function CalculatorBody({ tab = "tvm", onReset }: { tab?: CalcTab; onReset: () => void }) {
   const [active, setActive] = useState<CalcTab>(tab)
 
   const [tvm, setTvm] = useState<TvmState>(defaultTvm)
@@ -178,8 +189,8 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
   const [subB, setSubB] = useState(25)
   const [mulA, setMulA] = useState(12)
   const [mulB, setMulB] = useState(8)
-  const [divA, setDivA] = useState(73464)
-  const [divB, setDivB] = useState(0.07)
+  const [divA, setDivA] = useState(90000)
+  const [divB, setDivB] = useState(0.08)
   const [base, setBase] = useState(100)
   const [pctN, setPctN] = useState(7)
   const [v1, setV1] = useState(100)
@@ -269,21 +280,22 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
   return (
     <Page
       kicker="Financial calculator"
-      title="CCIM-style calculator workbook"
-      source="Independent recreation of the V 14.3 tab layout — yellow cells are inputs, blue cells calculate"
+      title="Time value and cash-flow calculator"
+      source="Yellow cells are inputs. Blue cells calculate. Cash out is negative."
     >
+      <ResetExample onClick={onReset} />
       <Workbook
-        title="Financial Calculator"
-        version="Study recreation · V 14.3 tab order"
+        title="Financial calculator"
+        version="Study worksheet"
         tabs={TABS}
         active={active}
         onTab={(id) => setActive(id as CalcTab)}
       >
         {active === "tvm" && (
           <div className="max-w-xl">
+            <SignNote />
             <p className="mb-3 text-xs text-[#595959]">
-              Sign convention matches a handheld: money out is negative. N = Years × Payments Per Year. The
-              solved key is the blue cell.
+              N = Years × payments per year. The solved key is the blue cell.
             </p>
             <TvmBlock s={tvm} set={(patch) => setTvm((cur) => ({ ...cur, ...patch }))} title="Time Value of Money" />
           </div>
@@ -308,16 +320,19 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
 
         {active === "npv" && (
           <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+            <div className="lg:col-span-2">
+              <SignNote />
+            </div>
             <XlGrid cols="70px 140px 40px 140px">
               <XlHead span={4}>Annual NPV and IRR Calculations</XlHead>
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Holding Period (Years)</td>
                 <XlTd>
-                  <XlInput value={hold} onChange={setHold} />
+                  <XlInput label="Holding period in years" value={hold} onChange={setHold} />
                 </XlTd>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">NPV Discount Rate</td>
                 <XlTd>
-                  <XlInput value={hurdle} onChange={setHurdle} />
+                  <XlInput label="NPV discount rate" value={hurdle} onChange={setHurdle} />
                 </XlTd>
               </tr>
               <tr>
@@ -331,6 +346,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   <td className="border border-[#d6dce4] px-2 text-center">{i}</td>
                   <XlTd>
                     <XlInput
+                      label={`Year ${i} cash flow`}
                       value={cfs[i] ?? 0}
                       onChange={(n) => setCfs((rows) => rows.map((v, idx) => (idx === i ? n : v)))}
                     />
@@ -338,6 +354,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   <td className="border border-[#d6dce4] text-center text-[#7f7f7f]">+</td>
                   <XlTd>
                     <XlInput
+                      label={`Year ${i} sale proceeds`}
                       value={sales[i] ?? 0}
                       onChange={(n) => setSales((rows) => rows.map((v, idx) => (idx === i ? n : v)))}
                     />
@@ -354,7 +371,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               </XlRow>
               <XlRow label="Internal Rate of Return">
                 <XlTd kind="calc">
-                  <XlOut>{irrVal == null ? "—" : pct(irrVal)}</XlOut>
+                  <XlOut>{irrText(irrVal)}</XlOut>
                 </XlTd>
               </XlRow>
             </XlGrid>
@@ -368,14 +385,14 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Periods Per Year</td>
                 <XlTd>
-                  <XlInput value={ppyAnn} onChange={setPpyAnn} />
+                  <XlInput label="Periods per year" value={ppyAnn} onChange={setPpyAnn} />
                 </XlTd>
                 <td />
               </tr>
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">NPV Discount Rate</td>
                 <XlTd>
-                  <XlInput value={hurdleAnn} onChange={setHurdleAnn} />
+                  <XlInput label="Annuity NPV discount rate" value={hurdleAnn} onChange={setHurdleAnn} />
                 </XlTd>
                 <td />
               </tr>
@@ -388,10 +405,10 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                 <tr key={i}>
                   <td className="border border-[#d6dce4] px-2 text-center">{i}</td>
                   <XlTd>
-                    <XlInput value={amt} onChange={(n) => setAnnAmt((rows) => rows.map((v, idx) => (idx === i ? n : v)))} />
+                    <XlInput label={`Annuity ${i} amount`} value={amt} onChange={(n) => setAnnAmt((rows) => rows.map((v, idx) => (idx === i ? n : v)))} />
                   </XlTd>
                   <XlTd>
-                    <XlInput value={annTimes[i] ?? 0} onChange={(n) => setAnnTimes((rows) => rows.map((v, idx) => (idx === i ? n : v)))} />
+                    <XlInput label={`Annuity ${i} number of times`} value={annTimes[i] ?? 0} onChange={(n) => setAnnTimes((rows) => rows.map((v, idx) => (idx === i ? n : v)))} />
                   </XlTd>
                 </tr>
               ))}
@@ -409,7 +426,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               </XlRow>
               <XlRow label="IRR (annualized)">
                 <XlTd kind="calc">
-                  <XlOut>{annIrr == null ? "—" : pct(annIrr)}</XlOut>
+                  <XlOut>{irrText(annIrr)}</XlOut>
                 </XlTd>
               </XlRow>
             </XlGrid>
@@ -425,7 +442,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   NPV Discount Rate
                 </td>
                 <XlTd>
-                  <XlInput value={diffHurdle} onChange={setDiffHurdle} />
+                  <XlInput label="Differential NPV discount rate" value={diffHurdle} onChange={setDiffHurdle} />
                 </XlTd>
                 <td colSpan={3} />
               </tr>
@@ -441,11 +458,11 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                 <tr key={i}>
                   <td className="border border-[#d6dce4] px-2 text-center">{i}</td>
                   <XlTd>
-                    <XlInput value={row.a} onChange={(n) => setFlowA((rows) => rows.map((v, idx) => (idx === i ? n : v)))} />
+                    <XlInput label={`Year ${i} cash flow A`} value={row.a} onChange={(n) => setFlowA((rows) => rows.map((v, idx) => (idx === i ? n : v)))} />
                   </XlTd>
                   <td className="border border-[#d6dce4] text-center">−</td>
                   <XlTd>
-                    <XlInput value={row.b} onChange={(n) => setFlowB((rows) => rows.map((v, idx) => (idx === i ? n : v)))} />
+                    <XlInput label={`Year ${i} cash flow B`} value={row.b} onChange={(n) => setFlowB((rows) => rows.map((v, idx) => (idx === i ? n : v)))} />
                   </XlTd>
                   <td className="border border-[#d6dce4] text-center">=</td>
                   <XlTd kind="calc">
@@ -472,7 +489,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   Incremental IRR (A − B)
                 </td>
                 <XlTd kind="calc">
-                  <XlOut>{irrD == null ? "—" : pct(irrD)}</XlOut>
+                  <XlOut>{irrText(irrD)}</XlOut>
                 </XlTd>
               </tr>
             </XlGrid>
@@ -584,6 +601,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                         <td className="border border-[#d6dce4] px-2 text-center">{idx + 1}</td>
                         <XlTd>
                           <XlInput
+                            label={`Statistic item ${idx + 1}`}
                             value={statVals[idx] ?? 0}
                             onChange={(n) => setStatVals((rows) => rows.map((v, j) => (j === idx ? n : v)))}
                           />
@@ -627,11 +645,11 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Addition</td>
                 <XlTd>
-                  <XlInput value={addA} onChange={setAddA} />
+                  <XlInput label="Addition first value" value={addA} onChange={setAddA} />
                 </XlTd>
                 <td className="text-center">+</td>
                 <XlTd>
-                  <XlInput value={addB} onChange={setAddB} />
+                  <XlInput label="Addition second value" value={addB} onChange={setAddB} />
                 </XlTd>
                 <td className="text-center">=</td>
                 <XlTd kind="calc">
@@ -641,11 +659,11 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Subtraction</td>
                 <XlTd>
-                  <XlInput value={subA} onChange={setSubA} />
+                  <XlInput label="Subtraction first value" value={subA} onChange={setSubA} />
                 </XlTd>
                 <td className="text-center">−</td>
                 <XlTd>
-                  <XlInput value={subB} onChange={setSubB} />
+                  <XlInput label="Subtraction second value" value={subB} onChange={setSubB} />
                 </XlTd>
                 <td className="text-center">=</td>
                 <XlTd kind="calc">
@@ -655,11 +673,11 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Multiplication</td>
                 <XlTd>
-                  <XlInput value={mulA} onChange={setMulA} />
+                  <XlInput label="Multiplication first value" value={mulA} onChange={setMulA} />
                 </XlTd>
                 <td className="text-center">×</td>
                 <XlTd>
-                  <XlInput value={mulB} onChange={setMulB} />
+                  <XlInput label="Multiplication second value" value={mulB} onChange={setMulB} />
                 </XlTd>
                 <td className="text-center">=</td>
                 <XlTd kind="calc">
@@ -669,11 +687,11 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Division</td>
                 <XlTd>
-                  <XlInput value={divA} onChange={setDivA} />
+                  <XlInput label="Division numerator" value={divA} onChange={setDivA} />
                 </XlTd>
                 <td className="text-center">/</td>
                 <XlTd>
-                  <XlInput value={divB} onChange={setDivB} />
+                  <XlInput label="Division denominator" value={divB} onChange={setDivB} />
                 </XlTd>
                 <td className="text-center">=</td>
                 <XlTd kind="calc">
@@ -686,11 +704,11 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Add %</td>
                 <XlTd>
-                  <XlInput value={base} onChange={setBase} />
+                  <XlInput label="Percent base for addition" value={base} onChange={setBase} />
                 </XlTd>
                 <td className="text-center">+</td>
                 <XlTd>
-                  <XlInput value={pctN} onChange={setPctN} />
+                  <XlInput label="Percent to add" value={pctN} onChange={setPctN} />
                 </XlTd>
                 <td className="text-center">=</td>
                 <XlTd kind="calc">
@@ -700,11 +718,11 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Subtract %</td>
                 <XlTd>
-                  <XlInput value={base} onChange={setBase} />
+                  <XlInput label="Percent base for subtraction" value={base} onChange={setBase} />
                 </XlTd>
                 <td className="text-center">−</td>
                 <XlTd>
-                  <XlInput value={pctN} onChange={setPctN} />
+                  <XlInput label="Percent to subtract" value={pctN} onChange={setPctN} />
                 </XlTd>
                 <td className="text-center">=</td>
                 <XlTd kind="calc">
@@ -714,14 +732,14 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Value 1</td>
                 <XlTd>
-                  <XlInput value={v1} onChange={setV1} />
+                  <XlInput label="Percent change starting value" value={v1} onChange={setV1} />
                 </XlTd>
                 <td colSpan={4} />
               </tr>
               <tr>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Value 2</td>
                 <XlTd>
-                  <XlInput value={v2} onChange={setV2} />
+                  <XlInput label="Percent change ending value" value={v2} onChange={setV2} />
                 </XlTd>
                 <td className="text-center">%</td>
                 <td className="border border-[#d6dce4] bg-[#f8f8f8] px-3">Change</td>
@@ -768,6 +786,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   <td className="border border-[#d6dce4] px-2 text-center">{t}</td>
                   <XlTd>
                     <XlInput
+                      label={`Year ${t} accumulated cash flow`}
                       value={accCf[t] ?? 0}
                       onChange={(n) =>
                         setAccCf((rows) => {
@@ -780,6 +799,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   </XlTd>
                   <XlTd>
                     <XlInput
+                      label={`Year ${t} accumulated sale cash flow`}
                       value={accSale[t] ?? 0}
                       onChange={(n) =>
                         setAccSale((rows) => {
@@ -815,7 +835,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   IRR
                 </td>
                 <XlTd kind="calc">
-                  <XlOut>{accum.irr == null ? "—" : pct(accum.irr)}</XlOut>
+                  <XlOut>{irrText(accum.irr)}</XlOut>
                 </XlTd>
               </tr>
               <tr>

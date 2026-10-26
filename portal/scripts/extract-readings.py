@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""Rebuild spoken-text JSON from the Support Materials module packets."""
-import json, re, subprocess
+"""Local-only helper for personal PDFs on this machine.
+
+Writes JSON under portal/.local-readings/, which is gitignored.
+The study site does not read this output. Do not copy it into public/, src/,
+dist/, or any path that is committed or deployed.
+"""
+import json
+import re
+import subprocess
+import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 src = root / "Support Materials"
-out = root / "portal" / "public" / "readings"
-out.mkdir(parents=True, exist_ok=True)
+out = Path(__file__).resolve().parents[1] / ".local-readings"
+
+blocked = {"public", "src", "dist"}
+if blocked.intersection(out.parts):
+    sys.exit("Refusing to write extracted text into the site.")
 
 files = {
     "1": "FOUND_M1_Overview_2025-07-14.pdf",
@@ -53,24 +64,38 @@ def clean_page(text: str) -> list[str]:
     return [c.strip() for c in merged if len(c.strip()) > 20]
 
 
-index = []
-for mid, name in files.items():
-    pdf = src / name
-    info = subprocess.check_output(["pdfinfo", str(pdf)], text=True, errors="replace")
-    pages = int(re.search(r"Pages:\s+(\d+)", info).group(1))
-    page_objs = []
-    for p in range(1, pages + 1):
-        raw = subprocess.check_output(
-            ["pdftotext", "-f", str(p), "-l", str(p), str(pdf), "-"],
-            text=True,
-            errors="replace",
+def main() -> None:
+    if not src.is_dir():
+        sys.exit(f"No local PDF folder at {src}. Nothing written.")
+    out.mkdir(parents=True, exist_ok=True)
+    index = []
+    for mid, name in files.items():
+        pdf = src / name
+        if not pdf.is_file():
+            print(f"skip M{mid}: missing {name}")
+            continue
+        info = subprocess.check_output(["pdfinfo", str(pdf)], text=True, errors="replace")
+        pages = int(re.search(r"Pages:\s+(\d+)", info).group(1))
+        page_objs = []
+        for p in range(1, pages + 1):
+            raw = subprocess.check_output(
+                ["pdftotext", "-f", str(p), "-l", str(p), str(pdf), "-"],
+                text=True,
+                errors="replace",
+            )
+            paras = clean_page(raw)
+            if paras:
+                page_objs.append({"page": p, "paragraphs": paras})
+        (out / f"module-{mid}.json").write_text(
+            json.dumps({"id": mid, "pages": page_objs}),
+            encoding="utf-8",
         )
-        paras = clean_page(raw)
-        if paras:
-            page_objs.append({"page": p, "paragraphs": paras})
-    (out / f"module-{mid}.json").write_text(json.dumps({"id": mid, "file": name, "pages": page_objs}), encoding="utf-8")
-    words = sum(len(x.split()) for pg in page_objs for x in pg["paragraphs"])
-    index.append({"id": mid, "file": name, "pageCount": len(page_objs), "words": words})
-    print(f"M{mid}: {len(page_objs)} pages, ~{words} words")
+        words = sum(len(x.split()) for pg in page_objs for x in pg["paragraphs"])
+        index.append({"id": mid, "pageCount": len(page_objs), "words": words})
+        print(f"M{mid}: {len(page_objs)} pages, ~{words} words -> {out}")
+    (out / "index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")
+    print("Local only. Do not copy this folder into the site.")
 
-(out / "index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")
+
+if __name__ == "__main__":
+    main()

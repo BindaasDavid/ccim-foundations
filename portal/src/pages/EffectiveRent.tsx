@@ -1,8 +1,13 @@
 import { useMemo, useState } from "react"
 import { money } from "../lib/format"
-import { Card, Field, Page, Stat } from "../components/ui"
+import { Card, Field, Page, ResetExample, Stat } from "../components/ui"
 
 export function EffectiveRent() {
+  const [epoch, setEpoch] = useState(0)
+  return <EffectiveRentBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function EffectiveRentBody({ onReset }: { onReset: () => void }) {
   const [sf, setSf] = useState(2000)
   const [face, setFace] = useState(24)
   const [years, setYears] = useState(5)
@@ -25,7 +30,8 @@ export function EffectiveRent() {
   }, [sf, face, years, freeMonths, ti, opex, stop])
 
   return (
-    <Page kicker="Module 5 / Task 2 & 4" title="Expense stop and effective rent" source="FOUND_M5_Lease_Clauses and FOUND_M10 Tasks 2 and 4">
+    <Page kicker="Leasing" title="Expense stop and effective rent" source="Compare face rent after free rent, tenant improvements, and who pays expenses.">
+      <ResetExample onClick={onReset} />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <div className="grid gap-3 sm:grid-cols-2">

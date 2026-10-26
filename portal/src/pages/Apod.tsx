@@ -1,37 +1,42 @@
 import { useMemo, useState } from "react"
 import { money, pct } from "../lib/format"
-import { Card, Page, Sheet, SheetRow, Stat, TextField } from "../components/ui"
+import { Card, Page, ResetExample, Sheet, SheetRow, Stat, TextField } from "../components/ui"
 
 export function Apod() {
-  const [name, setName] = useState("Subject office")
-  const [sf, setSf] = useState(10000)
-  const [price, setPrice] = useState(1050000)
+  const [epoch, setEpoch] = useState(0)
+  return <ApodBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function ApodBody({ onReset }: { onReset: () => void }) {
+  const [name, setName] = useState("Example office")
+  const [sf, setSf] = useState(15000)
+  const [price, setPrice] = useState(2400000)
   const [acq, setAcq] = useState(0)
   const [loanFees, setLoanFees] = useState(0)
-  const [loan, setLoan] = useState(350000)
+  const [loan, setLoan] = useState(1600000)
 
-  const [pri, setPri] = useState(106200)
-  const [vacPct, setVacPct] = useState(7)
+  const [pri, setPri] = useState(360000)
+  const [vacPct, setVacPct] = useState(6)
   const [other, setOther] = useState(0)
 
-  const [tax, setTax] = useState(10000)
+  const [tax, setTax] = useState(45000)
   const [pptax, setPptax] = useState(0)
-  const [ins, setIns] = useState(3000)
-  const [mgmt, setMgmt] = useState(6914)
+  const [ins, setIns] = useState(12000)
+  const [mgmt, setMgmt] = useState(18000)
   const [payroll, setPayroll] = useState(0)
   const [benefits, setBenefits] = useState(0)
   const [wc, setWc] = useState(0)
-  const [rm, setRm] = useState(2000)
-  const [electric, setElectric] = useState(600)
-  const [water, setWater] = useState(600)
-  const [legal, setLegal] = useState(988)
+  const [rm, setRm] = useState(8000)
+  const [electric, setElectric] = useState(4000)
+  const [water, setWater] = useState(2000)
+  const [legal, setLegal] = useState(2500)
   const [permits, setPermits] = useState(0)
   const [ads, setAds] = useState(0)
   const [supplies, setSupplies] = useState(0)
   const [misc, setMisc] = useState(0)
-  const [landscape, setLandscape] = useState(1200)
+  const [landscape, setLandscape] = useState(4000)
 
-  const [debt, setDebt] = useState(48000)
+  const [debt, setDebt] = useState(120000)
   const [part, setPart] = useState(0)
   const [leaseComm, setLeaseComm] = useState(0)
   const [reserves, setReserves] = useState(0)
@@ -60,17 +65,17 @@ export function Apod() {
   }, [pri, vacPct, other, tax, pptax, ins, mgmt, payroll, benefits, wc, rm, electric, water, legal, permits, ads, supplies, misc, landscape, debt, part, leaseComm, reserves, price, acq, loanFees, loan, sf])
 
   return (
-    <Page kicker="Imported form" title="Annual Property Operating Data" source="CCIM_APOD_eForm.pdf — line totals follow the printed form">
+    <Page kicker="Operations" title="Annual property operating data" source="Potential rent through cash flow before tax.">
+      <ResetExample onClick={onReset} />
       <p className="mb-6 text-sm text-ink/65">
-        White rows are inputs. Gold rows are totals of the lines above them. Line 29 is the sum of
-        operating expenses. Line 35 is NOI minus debt service, participation, leasing commissions, and
-        reserves.
+        White rows are inputs. Gold rows total the lines above them. Operating expenses stop before debt.
+        Cash flow before tax is NOI minus debt service, participation, leasing commissions, and reserves.
       </p>
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Initial investment" value={money(c.equity, 0)} accent />
-        <Stat label="Line 29 total opex" value={money(c.opex, 0)} />
-        <Stat label="Line 30 NOI" value={money(c.noi, 0)} />
-        <Stat label="Line 35 CFBT" value={money(c.cfbt, 0)} accent />
+        <Stat label="Total operating expenses" value={money(c.opex, 0)} />
+        <Stat label="NOI" value={money(c.noi, 0)} />
+        <Stat label="Cash flow before tax" value={money(c.cfbt, 0)} accent />
       </div>
 
       <Card className="mb-6">

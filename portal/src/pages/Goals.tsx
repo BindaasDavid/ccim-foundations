@@ -1,8 +1,13 @@
 import { useMemo, useState } from "react"
 import { money, num } from "../lib/format"
-import { Page, Sheet, SheetRow, Stat } from "../components/ui"
+import { Page, ResetExample, Sheet, SheetRow, Stat } from "../components/ui"
 
 export function Goals() {
+  const [epoch, setEpoch] = useState(0)
+  return <GoalsBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function GoalsBody({ onReset }: { onReset: () => void }) {
   const [goal, setGoal] = useState(100000)
   const [avgDeal, setAvgDeal] = useState(50000)
   const [commPct, setCommPct] = useState(6)
@@ -25,7 +30,8 @@ export function Goals() {
   }, [goal, avgDeal, commPct, coSplit, withCo, desk, leads, calls])
 
   return (
-    <Page kicker="Imported form" title="Annual financial goal" source="Annual_Financial_Goal_Worksheet_v2.1.xls — each total uses only its source lines">
+    <Page kicker="Business" title="Annual financial goal" source="Work backward from an income goal to closings and weekly contacts.">
+      <ResetExample onClick={onReset} />
       <p className="mb-6 text-sm text-ink/65">
         Commission to you is the blended company share after co-broker deals, then after the desk
         split. Closings needed is the goal divided by that number. Weekly contacts assume 48 working

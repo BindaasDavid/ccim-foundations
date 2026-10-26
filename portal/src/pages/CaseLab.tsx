@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react"
 import { irr, pmt, remainingBalance } from "../lib/finance"
-import { money, num, pct } from "../lib/format"
+import { irrText, money, num, pct } from "../lib/format"
 import { modules } from "../data/modules"
-import { AnswerKey, Card, Field, Page, Sheet, SheetRow, Stat } from "../components/ui"
-import { buildNoiForecast, parkPlazaDrivers, parkPlazaTenants, type NoiDrivers, type TenantRow } from "../lib/noiForecast"
+import { Card, Field, Page, ResetExample, Sheet, SheetRow, Stat } from "../components/ui"
+import { buildNoiForecast, exampleDrivers, exampleTenants, type NoiDrivers, type TenantRow } from "../lib/noiForecast"
 import { NoiForecastGrid } from "./NoiForecast"
 
 const YEARS = [1, 2, 3, 4, 5, 6] as const
@@ -27,6 +27,11 @@ function roundThousands(n: number) {
 }
 
 export function CaseLab() {
+  const [epoch, setEpoch] = useState(0)
+  return <CaseLabBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function CaseLabBody({ onReset }: { onReset: () => void }) {
   const meta = modules.find((m) => m.id === "10")!
 
   const [notes, setNotes] = useState(
@@ -65,24 +70,24 @@ export function CaseLab() {
   const [b] = useState<Tenant>({ name: "Suite B", y1: 48000, bump4: 5, bump6: 0 })
   const [c] = useState<Tenant>({ name: "Suite C", y1: 50000, bump4: 5, bump6: 5 })
   const [d] = useState<Tenant>({ name: "Suite D", y1: 64000, bump4: 5, bump6: 0 })
-  const [vacPct, setVacPct] = useState(7)
-  const [mgmtPct, setMgmtPct] = useState(7)
+  const [vacPct, setVacPct] = useState(5)
+  const [mgmtPct, setMgmtPct] = useState(4)
   const [adminPct, setAdminPct] = useState(1)
-  const [tax, setTax] = useState(10000)
-  const [ins, setIns] = useState(3000)
-  const [rm, setRm] = useState(2000)
-  const [electric, setElectric] = useState(600)
-  const [water, setWater] = useState(600)
-  const [landscape, setLandscape] = useState(1200)
-  const [cap, setCap] = useState(7)
+  const [tax, setTax] = useState(18000)
+  const [ins, setIns] = useState(4500)
+  const [rm, setRm] = useState(6000)
+  const [electric, setElectric] = useState(2200)
+  const [water, setWater] = useState(1800)
+  const [landscape, setLandscape] = useState(2400)
+  const [cap, setCap] = useState(8)
   const [price, setPrice] = useState(0)
   const [t6tenants, setT6tenants] = useState<TenantRow[]>(() =>
-    parkPlazaTenants.map((t) => ({ ...t, rents: [...t.rents] })),
+    exampleTenants.map((t) => ({ ...t, rents: [...t.rents] })),
   )
-  const [t6drivers, setT6drivers] = useState<NoiDrivers>({ ...parkPlazaDrivers })
+  const [t6drivers, setT6drivers] = useState<NoiDrivers>({ ...exampleDrivers })
   const noiYears = useMemo(() => buildNoiForecast(t6tenants, t6drivers), [t6tenants, t6drivers])
 
-  const [loan, setLoan] = useState(1050000)
+  const [loan, setLoan] = useState(1500000)
   const [ratePct, setRatePct] = useState(6.5)
   const [amortYrs, setAmortYrs] = useState(25)
   const [hold, setHold] = useState(5)
@@ -130,8 +135,8 @@ export function CaseLab() {
     const year1 = base - ownerOpex - free$ - ti
     return { base, ownerOpex, free$, ti, year1, psf: suiteSf ? year1 / suiteSf : 0 }
   }
-  const pA = useMemo(() => prospect(aFace, aFree, aTi), [aFace, aFree, aTi, suiteSf, stopPsf])
-  const pC = useMemo(() => prospect(cFace, cFree, cTi), [cFace, cFree, cTi, suiteSf, stopPsf])
+  const pA = prospect(aFace, aFree, aTi)
+  const pC = prospect(cFace, cFree, cTi)
 
   const forecast = useMemo(() => {
     const tenants = [a, b, c, d]
@@ -169,39 +174,24 @@ export function CaseLab() {
   }, [loan, ratePct, amortYrs, hold, purchase, noiYears, exitCap, saleCostPct])
 
   const pick = pA.year1 >= pC.year1 ? "Prospect A" : "Prospect B"
-  const key = meta.tldr.answers ?? []
 
   return (
-    <Page kicker="Module 10 · published answers" title="Office case study" source={`${meta.packet} — Tasks 1–8 answers are on this page`}>
-      <section id="answers" className="mb-8 rounded-xl border-2 border-gold bg-gold/15 p-6">
-        <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">TLDR · published answers</p>
-        <p className="font-serif mt-2 text-xl leading-snug text-ink">{meta.tldr.line}</p>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-ink">
+    <Page kicker="Office walkthrough" title="Case lab" source={meta.tldr.line}>
+      <ResetExample onClick={onReset} />
+      <section className="mb-8 rounded-xl border border-gold/40 bg-gold/10 p-5">
+        <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">How to use this lab</p>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-ink/80">
           {meta.tldr.bullets.map((b) => (
             <li key={b}>{b}</li>
           ))}
         </ul>
-        <div className="mt-6 space-y-6">
-          {(meta.tldr.answers ?? []).map((a) => (
-            <div key={a.task} className="rounded-lg border border-gold/50 bg-paper p-4">
-              <p className="font-serif text-lg text-ink">{a.task}</p>
-              <ol className="mt-2 space-y-2 text-sm text-ink">
-                {a.items.map((item) => (
-                  <li key={item} className="leading-relaxed">
-                    {item}
-                  </li>
-                ))}
-              </ol>
-            </div>
-          ))}
-        </div>
       </section>
 
       <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Year 1 NOI" value={money(y1?.noi ?? 0, 0)} />
         <Stat label="Indicated value" value={money(asking, 0)} />
         <Stat label="Sale proceeds (BT)" value={money(loanModel.sbt, 0)} />
-        <Stat label="Before-tax IRR" value={loanModel.irr == null ? "—" : pct(loanModel.irr)} accent />
+        <Stat label="Before-tax IRR" value={irrText(loanModel.irr)} accent />
       </div>
 
       <div className="space-y-8">
@@ -211,12 +201,14 @@ export function CaseLab() {
             Characterize workforce, lifestyle, and four uses that belong in the vacant suite. This task is
             judgment. The numbers start at Task 2.
           </p>
-          <textarea
-            className="mt-4 min-h-28 w-full rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-gold"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-          {key[0] && <AnswerKey title={key[0].task} items={key[0].items} />}
+          <label className="mt-4 block text-sm">
+            <span className="mb-1 block text-xs font-medium text-ink/70">Market notes</span>
+            <textarea
+              className="min-h-28 w-full rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-gold"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          </label>
         </Card>
 
         <Card id="task-2">
@@ -233,7 +225,6 @@ export function CaseLab() {
             <Stat label="Tenant year-1 cost" value={money(t2.total, 0)} accent />
             <Stat label="Effective $/SF" value={money(t2.eff, 2)} />
           </div>
-          {key[1] && <AnswerKey title={key[1].task} items={key[1].items} />}
         </Card>
 
         <Card id="task-3">
@@ -301,7 +292,6 @@ export function CaseLab() {
             <Stat label="Absorption" value={`${num(t3.totAbs, 0)} sf`} />
             <Stat label="EOY occupied" value={`${num(t3.totOcc0 + t3.totAbs, 0)} sf`} />
           </div>
-          {key[2] && <AnswerKey title={key[2].task} items={key[2].items} />}
         </Card>
 
         <Card id="task-4">
@@ -340,14 +330,13 @@ export function CaseLab() {
             Year-1 owner cash is higher for <span className="font-medium">{pick}</span>. Fill the vacancy
             with the prospect that still leaves the owner whole after TIs and free rent.
           </p>
-          {key[3] && <AnswerKey title={key[3].task} items={key[3].items} />}
         </Card>
 
         <Card>
           <p className="text-xs tracking-wide text-gold-deep uppercase">Task 5 · APOD and value</p>
           <p className="mt-2 text-sm text-ink/70">
-            Line 29 is the gold total. The $1.74 stop covers taxes through landscaping on 10,000 sf.
-            Management is 7% of GOI. Accounting/legal/permits/advertising is the 1% admin line.
+            Operating expenses are the gold total. Taxes, insurance, repairs, utilities, and landscaping are inputs.
+            Management and admin are percents of gross income.
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Field label="Vacancy (%)" value={vacPct} onChange={setVacPct} />
@@ -357,41 +346,37 @@ export function CaseLab() {
             <Field label="Override purchase $" value={price} onChange={setPrice} />
           </div>
           <div className="mt-4">
-            <Sheet title="Line 29 operating expenses">
-              <SheetRow n="7" label="Real estate taxes ($1.00 psf)" value={tax} onChange={setTax} format="money" />
-              <SheetRow n="8" label="Personal property taxes" value={0} kind="computed" format="money" />
-              <SheetRow n="9" label="Property insurance ($0.30 psf)" value={ins} onChange={setIns} format="money" />
-              <SheetRow n="10" label="Off-site management (7% of GOI)" value={y1?.mgmt ?? 0} kind="computed" format="money" />
-              <SheetRow n="11–13" label="Payroll / benefits / workers’ comp (inside mgmt fee)" value={0} kind="computed" format="money" />
-              <SheetRow n="14" label="Repairs and maintenance — exterior/CAM ($0.20 psf)" value={rm} onChange={setRm} format="money" />
-              <SheetRow n="15" label="Common-area electric ($0.06 psf)" value={electric} onChange={setElectric} format="money" />
-              <SheetRow n="16" label="Water and sewer ($0.06 psf)" value={water} onChange={setWater} format="money" />
-              <SheetRow n="19–21" label="Accounting, legal, permits, advertising (combined)" value={y1?.admin ?? 0} kind="computed" format="money" />
-              <SheetRow n="24" label="Landscaping ($0.12 psf)" value={landscape} onChange={setLandscape} format="money" />
-              <SheetRow n="29" label="Total operating expenses" value={y1?.opex ?? 0} kind="total" format="money" hint="7 through 24" />
-              <SheetRow n="30" label="NOI" value={y1?.noi ?? 0} kind="total" format="money" hint="GOI − 29" />
+            <Sheet title="Operating expenses">
+              <SheetRow n="1" label="Real estate taxes" value={tax} onChange={setTax} format="money" />
+              <SheetRow n="2" label="Property insurance" value={ins} onChange={setIns} format="money" />
+              <SheetRow n="3" label="Management" value={y1?.mgmt ?? 0} kind="computed" format="money" />
+              <SheetRow n="4" label="Repairs and maintenance" value={rm} onChange={setRm} format="money" />
+              <SheetRow n="5" label="Common-area electric" value={electric} onChange={setElectric} format="money" />
+              <SheetRow n="6" label="Water and sewer" value={water} onChange={setWater} format="money" />
+              <SheetRow n="7" label="Admin and professional fees" value={y1?.admin ?? 0} kind="computed" format="money" />
+              <SheetRow n="8" label="Landscaping" value={landscape} onChange={setLandscape} format="money" />
+              <SheetRow n="9" label="Total operating expenses" value={y1?.opex ?? 0} kind="total" format="money" />
+              <SheetRow n="10" label="NOI" value={y1?.noi ?? 0} kind="total" format="money" hint="gross income minus expenses" />
             </Sheet>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Stat label="PRI" value={money(y1?.pri ?? 0, 0)} />
             <Stat label="Vacancy & credit" value={money(y1?.vacancy ?? 0, 0)} />
             <Stat label="GOI" value={money(y1?.goi ?? 0, 0)} />
-            <Stat label="Stop opex ($1.74 × 10,000)" value={money(y1?.stopOpex ?? 0, 0)} />
+            <Stat label="Fixed operating expenses" value={money(y1?.stopOpex ?? 0, 0)} />
             <Stat label="NOI ÷ cap" value={money(indicated, 0)} />
             <Stat label="Ask (nearest $1,000)" value={money(asking, 0)} />
             <Stat label="Purchase used" value={money(purchase, 0)} />
           </div>
-          {key[4] && <AnswerKey title={key[4].task} items={key[4].items} />}
         </Card>
 
         <Card id="task-6">
           <p className="text-xs tracking-wide text-gold-deep uppercase">Task 6 · Forecasting NOI</p>
           <p className="mt-2 mb-4 text-sm text-ink/70">
-            Same six-year stack as the packet worksheet. Yellow cells are tenant rents and the percent
-            drivers. Gold rows total PRI, GOI, opex, and NOI.
+            Yellow cells are tenant rents and the percent drivers. Gold rows total potential rent, gross income,
+            operating expenses, and NOI.
           </p>
           <NoiForecastGrid tenants={t6tenants} setTenants={setT6tenants} drivers={t6drivers} setDrivers={setT6drivers} />
-          {key[5] && <AnswerKey title={key[5].task} items={key[5].items} />}
         </Card>
 
         <Card>
@@ -430,7 +415,6 @@ export function CaseLab() {
               </tbody>
             </table>
           </div>
-          {key[6] && <AnswerKey title={key[6].task} items={key[6].items} />}
         </Card>
 
         <Card>
@@ -446,7 +430,7 @@ export function CaseLab() {
             <Stat label="Cost of sale" value={money(loanModel.costs, 0)} />
             <Stat label="Loan balance" value={money(loanModel.bal, 0)} />
             <Stat label="Sale proceeds BT" value={money(loanModel.sbt, 0)} accent />
-            <Stat label="Before-tax IRR" value={loanModel.irr == null ? "—" : pct(loanModel.irr)} accent />
+            <Stat label="Before-tax IRR" value={irrText(loanModel.irr)} accent />
           </div>
           <p className="mt-5 text-xs tracking-wide text-ink/50 uppercase">T-bar</p>
           <ol className="mt-2 space-y-1 text-sm">
@@ -457,7 +441,6 @@ export function CaseLab() {
               </li>
             ))}
           </ol>
-          {key[7] && <AnswerKey title={key[7].task} items={key[7].items} />}
         </Card>
       </div>
     </Page>

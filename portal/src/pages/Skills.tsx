@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { pct } from "../lib/format"
-import { Page } from "../components/ui"
+import { Page, ResetExample } from "../components/ui"
 
 const skills = [
   "Education",
@@ -38,6 +38,11 @@ function score(rows: Row[]) {
 }
 
 export function Skills() {
+  const [epoch, setEpoch] = useState(0)
+  return <SkillsBody key={epoch} onReset={() => setEpoch((n) => n + 1)} />
+}
+
+function SkillsBody({ onReset }: { onReset: () => void }) {
   const [sRows, setSRows] = useState<Row[]>(skills.map((name) => ({ name, rank: 3, weight: 2 })))
   const [tRows, setTRows] = useState<Row[]>(traits.map((name) => ({ name, rank: 3, weight: 2 })))
   const s = useMemo(() => score(sRows), [sRows])
@@ -54,7 +59,8 @@ export function Skills() {
           <h3 className="font-serif text-lg">{title}</h3>
           <span className="text-sm">{pct(summary.pct, 0)} of max</span>
         </div>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[28rem] text-sm">
           <thead>
             <tr className="text-left text-ink/50">
               <th className="px-4 py-2">Item</th>
@@ -72,6 +78,7 @@ export function Skills() {
                     type="number"
                     min={1}
                     max={5}
+                    aria-label={`${r.name} rank`}
                     className="w-16 rounded border border-line px-2 py-1"
                     value={r.rank}
                     onChange={(e) => edit(set, i, { rank: Number(e.target.value) })}
@@ -82,6 +89,7 @@ export function Skills() {
                     type="number"
                     min={1}
                     max={3}
+                    aria-label={`${r.name} weight`}
                     className="w-16 rounded border border-line px-2 py-1"
                     value={r.weight}
                     onChange={(e) => edit(set, i, { weight: Number(e.target.value) })}
@@ -104,12 +112,14 @@ export function Skills() {
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
     )
   }
 
   return (
-    <Page kicker="Self-assessment" title="Skills evaluation" source="Foundations_Skills_Worksheet_v2.0.xls">
+    <Page kicker="Self-assessment" title="Skills evaluation" source="Rank and weight skills to see where practice time should go.">
+      <ResetExample onClick={onReset} />
       <p className="mb-6 text-sm text-ink/65">
         Rank 1 = none through 5 = excellent. Weight 1 = low importance through 3 = very important. Score = rank × weight.
       </p>
