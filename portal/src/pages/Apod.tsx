@@ -60,7 +60,7 @@ export function Apod() {
   }, [pri, vacPct, other, tax, pptax, ins, mgmt, payroll, benefits, wc, rm, electric, water, legal, permits, ads, supplies, misc, landscape, debt, part, leaseComm, reserves, price, acq, loanFees, loan, sf])
 
   return (
-    <Page kicker="Imported form" title="Annual Property Operating Data" source="CCIM_APOD_eForm.pdf — line totals follow the printed form">
+    <Page kicker="Study form" title="Annual Property Operating Data" source="Line totals follow the operating-statement stack">
       <p className="mb-6 text-sm text-ink/65">
         White rows are inputs. Gold rows are totals of the lines above them. Line 29 is the sum of
         operating expenses. Line 35 is NOI minus debt service, participation, leasing commissions, and

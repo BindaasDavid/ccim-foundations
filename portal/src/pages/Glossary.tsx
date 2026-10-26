@@ -13,7 +13,7 @@ export function Glossary() {
     <Page
       kicker="Reference"
       title="Study glossary"
-      source="Terms selected from the course stack. Official wording is in CCIM_Glossary_2023-02_(2).pdf."
+      source="Study definitions written for this portal."
     >
       <input
         className="mb-6 w-full max-w-md rounded-md border border-line bg-white px-3 py-2 text-sm"

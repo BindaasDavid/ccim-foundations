@@ -33,7 +33,7 @@ export function Acsw() {
   }, [sale, costPct, basis, additions, cr, loanBal, reserves, ordRate, recapRate, cgRate, loanFeesLeft])
 
   return (
-    <Page kicker="Imported form" title="Alternative Cash Sale Worksheet" source="CCIM_ACSW_eForm.pdf — gold rows total the lines in the hint">
+    <Page kicker="Study form" title="Alternative Cash Sale Worksheet" source="Gold rows total the lines named in the hint">
       <p className="mb-6 text-sm text-ink/65">
         Amount realized is price minus cost of sale. Adjusted basis is original basis plus additions
         minus cost recovery. Sale proceeds before tax take the loan off and add reserves back. After-tax

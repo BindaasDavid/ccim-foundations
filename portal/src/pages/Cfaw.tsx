@@ -46,7 +46,7 @@ export function Cfaw() {
 
   const [name, setName] = useState("Park Plaza Task 8-6")
   const [forWhom, setForWhom] = useState("Owner")
-  const [by, setBy] = useState("CCIM")
+  const [by, setBy] = useState("")
   const [when, setWhen] = useState("Today")
   const [price, setPrice] = useState(1050000)
   const [acq, setAcq] = useState(0)
@@ -113,9 +113,9 @@ export function Cfaw() {
 
   return (
     <Page
-      kicker="Imported form"
+      kicker="Study form"
       title="Cash Flow Analysis Worksheet"
-      source="Independent recreation of CFAW_6Year_eForm — Park Plaza Tasks 6–8 figures are seeded"
+      source="Six-year cash-flow form. The office-case figures are seeded so the lines can be checked."
     >
       <p className="mb-4 text-sm text-ink/65">
         This is the printed CFAW, not the earlier simplified calculator. Yellow cells are inputs. Blue
@@ -404,7 +404,7 @@ export function Cfaw() {
 
         <p className="mt-3 text-[11px] text-[#555]">
           Periodic payment {money(pmt1, 2)} · ADS {money(ads, 0)} · Initial investment {money(equity, 0)}. Line 7
-          Year 6 should read {money(cols[5]?.noi ?? 0, 0)} for the Park Plaza seed (packet $80,173). Before-tax
+          Year 6 should read {money(cols[5]?.noi ?? 0, 0)} for the office-case seed. Before-tax
           work leaves line 16 at 0%.
         </p>
       </div>

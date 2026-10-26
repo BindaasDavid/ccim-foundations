@@ -4,31 +4,20 @@ import { Page } from "../components/ui"
 
 export function Library() {
   return (
-    <Page kicker="Support Materials" title="What each file became">
-      <div className="overflow-hidden rounded-xl border border-line bg-paper">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-ink text-cream">
-            <tr>
-              <th className="px-4 py-3 font-medium">File</th>
-              <th className="px-4 py-3 font-medium">Kind</th>
-              <th className="px-4 py-3 font-medium">In the portal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sources.map((s) => (
-              <tr key={s.file} className="border-t border-line">
-                <td className="px-4 py-3 font-medium">{s.file}</td>
-                <td className="px-4 py-3 text-ink/60">{s.kind}</td>
-                <td className="px-4 py-3">
-                  <Link to={s.portal} className="text-gold-deep hover:underline">
-                    Open tool
-                  </Link>
-                  <p className="mt-1 text-ink/60">{s.use}</p>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <Page kicker="In this portal" title="Notes and workshops">
+      <div className="grid gap-3">
+        {sources.map((s) => (
+          <article key={s.title} className="rounded-xl border border-line bg-paper p-4 md:p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="font-serif text-lg">{s.title}</h3>
+              <p className="text-xs tracking-wide text-ink/45 uppercase">{s.kind}</p>
+            </div>
+            <p className="mt-2 text-sm text-ink/70">{s.use}</p>
+            <Link to={s.portal} className="mt-3 inline-flex min-h-11 items-center text-sm text-gold-deep hover:underline">
+              Open
+            </Link>
+          </article>
+        ))}
       </div>
     </Page>
   )

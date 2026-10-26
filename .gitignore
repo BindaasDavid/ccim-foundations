@@ -3,7 +3,8 @@
 Support Materials/
 portal/node_modules/
 portal/dist/
-portal/public/readings/module-*.json
+portal/public/readings/
+portal/.local-readings/
 *.local
 .env
 .env.*

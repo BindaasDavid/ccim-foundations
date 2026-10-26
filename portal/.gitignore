@@ -12,8 +12,9 @@ dist
 dist-ssr
 *.local
 
-# Personal extract of copyrighted course packets — regenerate locally
-public/readings/module-*.json
+# Personal extract of copyrighted course packets — never publish
+public/readings/
+.local-readings/
 
 # Editor directories and files
 .vscode/*

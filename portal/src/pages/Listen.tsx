@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { modules } from "../data/modules"
-import { flatten, loadReading, type ReadingDoc } from "../lib/readings"
+import { spokenNotes, type NoteBlock } from "../lib/readings"
 import { HUMAN_VOICES, isHumanReady, loadHumanVoice, speakHuman, type HumanVoiceId } from "../lib/humanTts"
 import { CONVERSATIONAL_RATE, PASSAGE_GAP_MS, forSpeech, pauseAfter, pickEnglishVoice, rankVoices, splitForCadence } from "../lib/speech"
 import { Page } from "../components/ui"
@@ -12,7 +12,7 @@ function minutes(words: number) {
 
 export function ListenIndex() {
   return (
-    <Page kicker="Read aloud" title="Listen to modules 1–10" source="Spoken from the official module packets on this computer">
+    <Page kicker="Read aloud" title="Listen to modules 1–10" source="Spoken from the study notes on this portal">
       <p className="mb-6 max-w-2xl text-sm text-ink/65">
         Human voice is the neural reader (Liam — English male tenor). The first play downloads a
         model once and keeps it on this computer. That is what sounds like a person. Reed is only the
@@ -23,7 +23,7 @@ export function ListenIndex() {
           <Link key={m.id} to={`/listen/${m.id}`} className="rounded-xl border border-line bg-paper p-5 hover:border-gold">
             <p className="text-xs text-gold-deep">Module {m.number}</p>
             <h3 className="font-serif mt-1 text-xl">{m.title}</h3>
-            <p className="mt-2 text-sm text-ink/55">{m.pages} pages · {m.packet}</p>
+            <p className="mt-2 text-sm text-ink/70">{m.tldr.line}</p>
           </Link>
         ))}
       </div>
@@ -35,9 +35,6 @@ export function ListenPlayer() {
   const { id } = useParams()
   const navigate = useNavigate()
   const meta = modules.find((m) => m.id === id)
-  const [doc, setDoc] = useState<ReadingDoc | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [skipAnswers, setSkipAnswers] = useState(true)
   const [natural, setNatural] = useState(true)
   const [engine, setEngine] = useState<"human" | "mac">("mac")
   const [humanVoice, setHumanVoice] = useState<HumanVoiceId>("am_liam")
@@ -57,12 +54,12 @@ export function ListenPlayer() {
   const voicesRef = useRef(voices)
   const engineRef = useRef(engine)
   const humanVoiceRef = useRef(humanVoice)
-  const blocksRef = useRef<{ page: number; text: string }[]>([])
+  const blocksRef = useRef<NoteBlock[]>([])
   const timerRef = useRef<number | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const activeRef = useRef<HTMLDivElement | null>(null)
 
-  const blocks = useMemo(() => (doc ? flatten(doc, skipAnswers) : []), [doc, skipAnswers])
+  const blocks = useMemo(() => (meta ? spokenNotes(meta) : []), [meta])
   blocksRef.current = blocks
   statusRef.current = status
   indexRef.current = index
@@ -85,15 +82,11 @@ export function ListenPlayer() {
   }, [blocks.length])
 
   useEffect(() => {
-    if (!id) return
-    loadReading(id)
-      .then((d) => {
-        setDoc(d)
-        setIndex(0)
-        setSentence(0)
-        setStatus("idle")
-      })
-      .catch((e: Error) => setError(e.message))
+    setIndex(0)
+    setSentence(0)
+    setStatus("idle")
+    window.speechSynthesis.cancel()
+    audioRef.current?.pause()
   }, [id])
 
   useEffect(() => {
@@ -256,14 +249,12 @@ export function ListenPlayer() {
   }
 
   if (!meta) return <Page kicker="Listen" title="Module not found">Unknown module.</Page>
-  if (error) return <Page kicker="Listen" title={meta.title}>{error}</Page>
-  if (!doc) return <Page kicker="Listen" title={meta.title}>Loading packet…</Page>
 
   const current = blocks[index]
 
   return (
-    <Page kicker={`Module ${meta.number} · read aloud`} title={meta.title} source={meta.packet}>
-      <div className="sticky top-0 z-10 mb-6 rounded-xl border border-line bg-paper/95 p-4 backdrop-blur">
+    <Page kicker={`Module ${meta.number} · read aloud`} title={meta.title} source="Study notes on this portal">
+      <div className="sticky top-16 z-20 mb-6 rounded-xl border border-line bg-paper/95 p-4 backdrop-blur md:top-0">
         <div className="flex flex-wrap items-center gap-2">
           {status !== "playing" ? (
             <button className="rounded-md bg-ink px-4 py-2 text-sm text-cream" onClick={() => void play()}>
@@ -349,16 +340,12 @@ export function ListenPlayer() {
               <input type="checkbox" checked={natural} onChange={(e) => setNatural(e.target.checked)} />
               Natural pauses
             </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={skipAnswers} onChange={(e) => setSkipAnswers(e.target.checked)} />
-              Skip answer keys
-            </label>
           </div>
         </div>
         <p className="mt-2 text-xs text-ink/50">
           {loadNote ? `${loadNote} · ` : ""}
           Passage {blocks.length ? index + 1 : 0} of {blocks.length}
-          {current ? ` · packet page ${current.page}` : ""}
+          {current ? ` · ${current.heading}` : ""}
           {sentences.length ? ` · sentence ${Math.min(sentence + 1, sentences.length)} of ${sentences.length}` : ""}
           · about {minutes(words)} min
         </p>
@@ -382,14 +369,14 @@ export function ListenPlayer() {
       <div className="space-y-4">
         {blocks.map((b, i) => (
           <div
-            key={`${b.page}-${i}`}
+            key={`${b.heading}-${i}`}
             ref={i === index ? activeRef : undefined}
             onClick={() => jump(i)}
-            className={`cursor-pointer rounded-xl border px-5 py-4 text-[17px] leading-relaxed ${
+            className={`cursor-pointer rounded-xl border px-4 py-4 text-base leading-relaxed md:px-5 md:text-[17px] ${
               i === index ? "border-gold bg-gold/15" : "border-transparent text-ink/80 hover:bg-paper"
             }`}
           >
-            <p className="mb-1 text-[11px] tracking-wide text-ink/40 uppercase">Page {b.page}</p>
+            <p className="mb-1 text-[11px] tracking-wide text-ink/40 uppercase">{b.heading}</p>
             {i === index && natural
               ? sentences.map((s, si) => (
                   <span key={si} className={si === sentence ? "rounded bg-gold/30" : undefined}>

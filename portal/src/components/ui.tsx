@@ -12,9 +12,9 @@ export function Page({
   children: ReactNode
 }) {
   return (
-    <div className="mx-auto max-w-6xl px-8 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-10">
       <p className="text-[11px] tracking-[0.2em] text-gold-deep uppercase">{kicker}</p>
-      <h2 className="font-serif mt-2 text-3xl text-ink">{title}</h2>
+      <h2 className="font-serif mt-2 text-3xl leading-tight text-ink md:text-4xl">{title}</h2>
       {source && <p className="mt-2 max-w-3xl text-sm text-ink/60">Based on: {source}</p>}
       <div className="mt-8">{children}</div>
     </div>
@@ -49,7 +49,7 @@ export function Field({
         <input
           type="number"
           step={step}
-          className="w-full rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-gold"
+          className="w-full min-w-0 rounded-md border border-line bg-white px-3 py-2 text-base outline-none focus:border-gold md:text-sm"
           value={value === 0 ? "" : value}
           onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
         />
@@ -72,7 +72,7 @@ export function TextField({
     <label className="block">
       <span className="mb-1 block text-xs font-medium text-ink/70">{label}</span>
       <input
-        className="w-full rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-gold"
+        className="w-full min-w-0 rounded-md border border-line bg-white px-3 py-2 text-base outline-none focus:border-gold md:text-sm"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
@@ -126,7 +126,7 @@ export function SheetRow({
           <input
             type="number"
             step="any"
-            className="w-full rounded-md border border-line bg-white px-2 py-1 text-right text-sm outline-none focus:border-gold"
+            className="w-full min-w-0 rounded-md border border-line bg-white px-2 py-1 text-right text-base outline-none focus:border-gold md:text-sm"
             value={value === 0 ? "" : value}
             onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
           />
@@ -177,7 +177,7 @@ export function Sheet({
 export function AnswerKey({ title, items }: { title: string; items: string[] }) {
   return (
     <div className="mt-4 rounded-lg border-2 border-gold bg-gold/15 p-4">
-      <p className="text-xs font-semibold tracking-[0.16em] text-gold-deep uppercase">Published answer · {title}</p>
+      <p className="text-xs font-semibold tracking-[0.16em] text-gold-deep uppercase">Worked example · {title}</p>
       <ol className="mt-2 space-y-2 text-sm text-ink">
         {items.map((item) => (
           <li key={item} className="leading-relaxed">

@@ -1,40 +1,26 @@
-export type ReadingPage = {
-  page: number
-  paragraphs: string[]
+import type { CourseModule } from "../data/modules"
+
+export type NoteBlock = {
+  heading: string
+  text: string
 }
 
-export type ReadingDoc = {
-  id: string
-  file: string
-  pages: ReadingPage[]
-}
-
-const tocNoise = /\.{6,}|_{6,}|…{3,}/
-
-export function isSpeakable(text: string): boolean {
-  const t = text.trim()
-  if (t.length < 40) return false
-  if (tocNoise.test(t) && t.length < 400) return false
-  if (/^answers to activity/i.test(t) && t.length < 80) return false
-  return true
-}
-
-export function flatten(doc: ReadingDoc, skipAnswers: boolean): { page: number; text: string }[] {
-  const rows: { page: number; text: string }[] = []
-  for (const p of doc.pages) {
-    const isAnswer =
-      skipAnswers &&
-      p.paragraphs.some((x) => /answers to (activity|task)/i.test(x) || /^answer section/i.test(x))
-    if (isAnswer) continue
-    for (const para of p.paragraphs) {
-      if (isSpeakable(para)) rows.push({ page: p.page, text: para })
-    }
+/**
+ * Passages Listen can read aloud. Built only from the study notes in modules.ts.
+ * Answer-key text is omitted: that block is flagged for a copyright review.
+ */
+export function spokenNotes(m: CourseModule): NoteBlock[] {
+  const blocks: NoteBlock[] = [
+    { heading: "Summary", text: m.tldr.line },
+    ...m.tldr.bullets.map((text, i) => ({ heading: `Note ${i + 1}`, text })),
+    ...m.outcomes.map((text) => ({ heading: "Outcome", text })),
+    ...m.agenda.map((text) => ({ heading: "Agenda", text })),
+    ...m.activities.map((text) => ({ heading: "Activity", text })),
+    ...m.focus.map((text) => ({ heading: "Study point", text })),
+    { heading: "Practice", text: m.practice },
+  ]
+  for (const section of m.walk ?? []) {
+    for (const text of section.points) blocks.push({ heading: section.title, text })
   }
-  return rows
-}
-
-export async function loadReading(id: string): Promise<ReadingDoc> {
-  const res = await fetch(`/readings/module-${id}.json`)
-  if (!res.ok) throw new Error(`Could not load module ${id}`)
-  return res.json()
+  return blocks.filter((b) => b.text.trim().length > 0)
 }

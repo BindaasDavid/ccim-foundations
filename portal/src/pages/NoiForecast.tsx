@@ -223,7 +223,7 @@ export function NoiForecast() {
     <Page
       kicker="Module 10 · Task 6"
       title="Forecasting NOI"
-      source="Interactive recreation of the six-year NOI worksheet (packet page 10.42)"
+      source="Six-year NOI worksheet. Edit tenant rents and the percent drivers."
     >
       <p className="mb-6 text-sm text-ink/65">
         Edit any tenant-year rent or the percent drivers. Totals follow the printed stack: PRI, vacancy,
@@ -231,7 +231,7 @@ export function NoiForecast() {
       </p>
       <Workbook
         title="Task 6: Forecasting NOI"
-        version="Study recreation · page 10.42"
+        version="Study recreation"
         tabs={[{ id: "noi", label: "NOI worksheet" }]}
         active="noi"
         onTab={() => undefined}

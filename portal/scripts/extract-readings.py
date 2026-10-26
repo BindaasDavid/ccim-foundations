@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Rebuild spoken-text JSON from the Support Materials module packets."""
-import json, re, subprocess
+"""Local-only extract of module packets for personal reading.
+
+Do not copy the output into portal/public or commit it. The site does not
+serve these files. Listen reads the study notes in src/data/modules.ts.
+"""
+import json, re, subprocess, sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 src = root / "Support Materials"
-out = root / "portal" / "public" / "readings"
+out = root / "portal" / ".local-readings"
+if "public" in out.parts:
+    sys.exit("Refusing to write packet text into a public directory.")
 out.mkdir(parents=True, exist_ok=True)
 
 files = {

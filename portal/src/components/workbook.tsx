@@ -35,7 +35,7 @@ export function Workbook({
           </button>
         ))}
       </div>
-      <div className="bg-white p-4">{children}</div>
+      <div className="overflow-x-auto bg-white p-3 md:p-4">{children}</div>
       <div className="flex flex-wrap gap-3 border-t border-[#d6dce4] bg-[#f2f2f2] px-4 py-2 text-[10px] uppercase tracking-wide text-[#595959]">
         <span className="inline-flex items-center gap-1.5">
           <i className="inline-block h-3 w-3 border border-[#bf8f00] bg-[#fff2cc]" /> Input
@@ -52,8 +52,11 @@ export function Workbook({
 }
 
 export function XlGrid({ children, cols }: { children: ReactNode; cols?: string }) {
+  const preferred = cols ? cols.split(" ").reduce((sum, w) => sum + (Number.parseFloat(w) || 0), 0) : 0
+  // Narrow forms shrink into the phone width. Wide tapes keep their columns and scroll.
+  const wide = preferred >= 520
   return (
-    <table className="w-full border-collapse text-[13px]">
+    <table className={`w-full border-collapse text-[13px] ${wide ? "min-w-max" : ""}`}>
       {cols ? (
         <colgroup>
           {cols.split(" ").map((w, i) => (

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { irr, pmt, remainingBalance } from "../lib/finance"
-import { money, num, pct } from "../lib/format"
+import { irrText, money, num, pct } from "../lib/format"
 import { modules } from "../data/modules"
 import { AnswerKey, Card, Field, Page, Sheet, SheetRow, Stat } from "../components/ui"
 import { buildNoiForecast, parkPlazaDrivers, parkPlazaTenants, type NoiDrivers, type TenantRow } from "../lib/noiForecast"
@@ -172,9 +172,9 @@ export function CaseLab() {
   const key = meta.tldr.answers ?? []
 
   return (
-    <Page kicker="Module 10 · published answers" title="Office case study" source={`${meta.packet} — Tasks 1–8 answers are on this page`}>
+    <Page kicker="Module 10" title="Office case study" source="Tasks 1–8, with the worked figures on this page">
       <section id="answers" className="mb-8 rounded-xl border-2 border-gold bg-gold/15 p-6">
-        <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">TLDR · published answers</p>
+        <p className="text-xs font-semibold tracking-[0.18em] text-gold-deep uppercase">Worked example</p>
         <p className="font-serif mt-2 text-xl leading-snug text-ink">{meta.tldr.line}</p>
         <ul className="mt-4 list-disc space-y-2 pl-5 text-ink">
           {meta.tldr.bullets.map((b) => (
@@ -201,7 +201,7 @@ export function CaseLab() {
         <Stat label="Year 1 NOI" value={money(y1?.noi ?? 0, 0)} />
         <Stat label="Indicated value" value={money(asking, 0)} />
         <Stat label="Sale proceeds (BT)" value={money(loanModel.sbt, 0)} />
-        <Stat label="Before-tax IRR" value={loanModel.irr == null ? "—" : pct(loanModel.irr)} accent />
+        <Stat label="Before-tax IRR" value={irrText(loanModel.irr)} accent />
       </div>
 
       <div className="space-y-8">
@@ -387,7 +387,7 @@ export function CaseLab() {
         <Card id="task-6">
           <p className="text-xs tracking-wide text-gold-deep uppercase">Task 6 · Forecasting NOI</p>
           <p className="mt-2 mb-4 text-sm text-ink/70">
-            Same six-year stack as the packet worksheet. Yellow cells are tenant rents and the percent
+            Same six-year stack as the case worksheet. Yellow cells are tenant rents and the percent
             drivers. Gold rows total PRI, GOI, opex, and NOI.
           </p>
           <NoiForecastGrid tenants={t6tenants} setTenants={setT6tenants} drivers={t6drivers} setDrivers={setT6drivers} />
@@ -446,7 +446,7 @@ export function CaseLab() {
             <Stat label="Cost of sale" value={money(loanModel.costs, 0)} />
             <Stat label="Loan balance" value={money(loanModel.bal, 0)} />
             <Stat label="Sale proceeds BT" value={money(loanModel.sbt, 0)} accent />
-            <Stat label="Before-tax IRR" value={loanModel.irr == null ? "—" : pct(loanModel.irr)} accent />
+            <Stat label="Before-tax IRR" value={irrText(loanModel.irr)} accent />
           </div>
           <p className="mt-5 text-xs tracking-wide text-ink/50 uppercase">T-bar</p>
           <ol className="mt-2 space-y-1 text-sm">

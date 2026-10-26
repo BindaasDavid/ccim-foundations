@@ -25,7 +25,7 @@ export function Goals() {
   }, [goal, avgDeal, commPct, coSplit, withCo, desk, leads, calls])
 
   return (
-    <Page kicker="Imported form" title="Annual financial goal" source="Annual_Financial_Goal_Worksheet_v2.1.xls — each total uses only its source lines">
+    <Page kicker="Study form" title="Annual financial goal" source="Each total uses only the lines named beside it">
       <p className="mb-6 text-sm text-ink/65">
         Commission to you is the blended company share after co-broker deals, then after the desk
         split. Closings needed is the goal divided by that number. Weekly contacts assume 48 working

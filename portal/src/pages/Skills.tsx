@@ -49,12 +49,12 @@ export function Skills() {
 
   function table(title: string, rows: Row[], set: typeof setSRows, summary: ReturnType<typeof score>) {
     return (
-      <div className="rounded-xl border border-line bg-paper">
+      <div className="overflow-x-auto rounded-xl border border-line bg-paper">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
           <h3 className="font-serif text-lg">{title}</h3>
           <span className="text-sm">{pct(summary.pct, 0)} of max</span>
         </div>
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[36rem] text-sm">
           <thead>
             <tr className="text-left text-ink/50">
               <th className="px-4 py-2">Item</th>
@@ -109,7 +109,7 @@ export function Skills() {
   }
 
   return (
-    <Page kicker="Self-assessment" title="Skills evaluation" source="Foundations_Skills_Worksheet_v2.0.xls">
+    <Page kicker="Self-assessment" title="Skills evaluation" source="Rank and weight each item, then read the gap">
       <p className="mb-6 text-sm text-ink/65">
         Rank 1 = none through 5 = excellent. Weight 1 = low importance through 3 = very important. Score = rank × weight.
       </p>

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { amortize, fv, irr, mean, median, nper, npv, pmt, pv, rate, stdev } from "../lib/finance"
-import { money, num, pct } from "../lib/format"
+import { irrText, money, num, pct } from "../lib/format"
 import { Page } from "../components/ui"
 import { Workbook, XlGrid, XlHead, XlInput, XlOut, XlRow, XlSection, XlTd } from "../components/workbook"
 
@@ -269,12 +269,12 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
   return (
     <Page
       kicker="Financial calculator"
-      title="CCIM-style calculator workbook"
-      source="Independent recreation of the V 14.3 tab layout — yellow cells are inputs, blue cells calculate"
+      title="Financial calculator workbook"
+      source="Yellow cells are inputs. Blue cells calculate. Cash out is negative."
     >
       <Workbook
         title="Financial Calculator"
-        version="Study recreation · V 14.3 tab order"
+        version="Study recreation"
         tabs={TABS}
         active={active}
         onTab={(id) => setActive(id as CalcTab)}
@@ -282,8 +282,8 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
         {active === "tvm" && (
           <div className="max-w-xl">
             <p className="mb-3 text-xs text-[#595959]">
-              Sign convention matches a handheld: money out is negative. N = Years × Payments Per Year. The
-              solved key is the blue cell.
+              Cash out is negative. Cash in is positive. N = Years × Payments Per Year. The solved key is the
+              blue cell.
             </p>
             <TvmBlock s={tvm} set={(patch) => setTvm((cur) => ({ ...cur, ...patch }))} title="Time Value of Money" />
           </div>
@@ -308,6 +308,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
 
         {active === "npv" && (
           <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+            <p className="text-xs text-[#595959] lg:col-span-2">Cash out is negative. Cash in is positive.</p>
             <XlGrid cols="70px 140px 40px 140px">
               <XlHead span={4}>Annual NPV and IRR Calculations</XlHead>
               <tr>
@@ -354,7 +355,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               </XlRow>
               <XlRow label="Internal Rate of Return">
                 <XlTd kind="calc">
-                  <XlOut>{irrVal == null ? "—" : pct(irrVal)}</XlOut>
+                  <XlOut>{irrText(irrVal)}</XlOut>
                 </XlTd>
               </XlRow>
             </XlGrid>
@@ -409,7 +410,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
               </XlRow>
               <XlRow label="IRR (annualized)">
                 <XlTd kind="calc">
-                  <XlOut>{annIrr == null ? "—" : pct(annIrr)}</XlOut>
+                  <XlOut>{irrText(annIrr)}</XlOut>
                 </XlTd>
               </XlRow>
             </XlGrid>
@@ -472,7 +473,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   Incremental IRR (A − B)
                 </td>
                 <XlTd kind="calc">
-                  <XlOut>{irrD == null ? "—" : pct(irrD)}</XlOut>
+                  <XlOut>{irrText(irrD)}</XlOut>
                 </XlTd>
               </tr>
             </XlGrid>
@@ -815,7 +816,7 @@ export function Calculator({ tab = "tvm" }: { tab?: CalcTab }) {
                   IRR
                 </td>
                 <XlTd kind="calc">
-                  <XlOut>{accum.irr == null ? "—" : pct(accum.irr)}</XlOut>
+                  <XlOut>{irrText(accum.irr)}</XlOut>
                 </XlTd>
               </tr>
               <tr>
